@@ -11,7 +11,10 @@ pub fn build(b: *std.Build) void {
             .target = target,
             .optimize = optimize,
         }),
+        .win32_manifest = b.path("assets/platforms/windows/win32.manifest"),
     });
+
+    exe.subsystem = .Windows;
 
     b.installArtifact(exe);
 
@@ -21,6 +24,7 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run_cmd.step);
 
     run_cmd.step.dependOn(b.getInstallStep());
+    run_cmd.setCwd(b.path("zig-out/bin"));
 
     if (b.args) |args| {
         run_cmd.addArgs(args);
