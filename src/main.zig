@@ -12,6 +12,7 @@ const WPARAM = windows.WPARAM;
 const LRESULT = windows.LRESULT;
 const HINSTANCE = windows.HINSTANCE;
 
+const ExitProcess = kernel32.ExitProcess;
 const PeekMessageW = wnd.PeekMessageW;
 const DefWindowProcW = wnd.DefWindowProcW;
 const PostQuitMessage = wnd.PostQuitMessage;
@@ -28,12 +29,14 @@ pub fn main() void {
     _ = impl.createWindow(hInstance, wndproc);
 
     var msg: MSG = undefined;
-    var exit_code: WPARAM = 0;
+    var exit_code: UINT = 0;
+
+    defer ExitProcess(exit_code);
 
     running: while (true) {
         while (PeekMessageW(&msg, null, 0, 0, PM_REMOVE) != 0) {
             if (msg.message == WM_QUIT) {
-                exit_code = msg.wParam;
+                exit_code = @intCast(msg.wParam);
                 break :running;
             }
 

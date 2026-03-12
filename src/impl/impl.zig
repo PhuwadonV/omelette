@@ -10,6 +10,7 @@ const WNDCLASSEXW = wnd.WNDCLASSEXW;
 
 const ShowWindow = wnd.ShowWindow;
 const LoadCursorW = wnd.LoadCursorW;
+const UpdateWindow = wnd.UpdateWindow;
 const CreateWindowExW = wnd.CreateWindowExW;
 const RegisterClassExW = wnd.RegisterClassExW;
 
@@ -66,6 +67,7 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
     );
 
     _ = ShowWindow(hWnd, SW_SHOWDEFAULT);
+    _ = UpdateWindow(hWnd);
 
     return hWnd;
 }
