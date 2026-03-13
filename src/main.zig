@@ -1,6 +1,7 @@
 const std = @import("std");
 const wnd = @import("wnd.zig");
 const impl = @import("impl/impl.zig");
+const unicode = std.unicode;
 const windows = std.os.windows;
 const kernel32 = windows.kernel32;
 
@@ -11,7 +12,13 @@ const LPARAM = windows.LPARAM;
 const WPARAM = windows.WPARAM;
 const LRESULT = windows.LRESULT;
 const HINSTANCE = windows.HINSTANCE;
+const PAINTSTRUCT = wnd.PAINTSTRUCT;
 
+const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
+
+const EndPaint = wnd.EndPaint;
+const TextOutW = wnd.TextOutW;
+const BeginPaint = wnd.BeginPaint;
 const ExitProcess = kernel32.ExitProcess;
 const PeekMessageW = wnd.PeekMessageW;
 const DefWindowProcW = wnd.DefWindowProcW;
@@ -48,10 +55,26 @@ pub fn main() void {
 
 fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT {
     const WM_DESTROY = 0x0002;
+    const WM_PAINT = 0x000F;
 
     if (uMsg == WM_DESTROY) {
         PostQuitMessage(0);
     }
 
+    switch (uMsg) {
+        WM_PAINT => {
+            renderText(hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+        },
+        else => {},
+    }
+
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+}
+
+fn renderText(hWnd: ?HWND, text: [:0]const u16) void {
+    var paint: PAINTSTRUCT = undefined;
+    const hDc = BeginPaint(hWnd, &paint);
+    defer _ = EndPaint(hWnd, &paint);
+
+    _ = TextOutW(hDc, 0, 0, text, @intCast(text.len));
 }

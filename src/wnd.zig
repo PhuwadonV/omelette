@@ -1,9 +1,12 @@
 const std = @import("std");
 const windows = std.os.windows;
 
+const HDC = windows.HDC;
 const ATOM = windows.ATOM;
 const BOOL = windows.BOOL;
+const BYTE = windows.BYTE;
 const HWND = windows.HWND;
+const RECT = windows.RECT;
 const UINT = windows.UINT;
 const DWORD = windows.DWORD;
 const HICON = windows.HICON;
@@ -30,6 +33,15 @@ pub const MSG = extern struct {
 
 pub const WNDPROC = *const fn (hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
 
+pub const PAINTSTRUCT = extern struct {
+    hDc: HDC,
+    fErase: BOOL,
+    rcPaint: RECT,
+    fRestore: BOOL,
+    fIncUpdate: BOOL,
+    rgbReserved: [32]BYTE,
+};
+
 pub const WNDCLASSEXW = extern struct {
     cbSize: UINT,
     style: UINT,
@@ -45,6 +57,8 @@ pub const WNDCLASSEXW = extern struct {
     hIconSm: ?HICON,
 };
 
+pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
+pub extern "user32" fn BeginPaint(hWnd: ?HWND, lpPaint: ?*PAINTSTRUCT) callconv(.winapi) ?HDC;
 pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
 pub extern "user32" fn LoadCursorW(hInstance: ?HINSTANCE, lpCursorName: ?LPCWSTR) callconv(.winapi) ?HCURSOR;
 pub extern "user32" fn PeekMessageW(lpMsg: ?*MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT, wRemoveMsg: UINT) callconv(.winapi) BOOL;
@@ -55,3 +69,5 @@ pub extern "user32" fn PostQuitMessage(nExitCode: c_int) callconv(.winapi) void;
 pub extern "user32" fn DispatchMessageW(lpMsg: ?*const MSG) callconv(.winapi) LRESULT;
 pub extern "user32" fn RegisterClassExW(lpWndClass: ?*const WNDCLASSEXW) callconv(.winapi) ATOM;
 pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BOOL;
+
+pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
