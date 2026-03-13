@@ -18,6 +18,16 @@ const LPCWSTR = windows.LPCWSTR;
 const LRESULT = windows.LRESULT;
 const HINSTANCE = windows.HINSTANCE;
 
+pub const MSG = extern struct {
+    hWnd: ?HWND,
+    message: UINT,
+    wParam: WPARAM,
+    lParam: LPARAM,
+    time: DWORD,
+    pt: POINT,
+    lPrivate: DWORD,
+};
+
 pub const WNDPROC = *const fn (hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
 
 pub const WNDCLASSEXW = extern struct {
@@ -33,16 +43,6 @@ pub const WNDCLASSEXW = extern struct {
     lpszMenuName: ?LPCWSTR,
     lpszClassName: ?LPCWSTR,
     hIconSm: ?HICON,
-};
-
-pub const MSG = extern struct {
-    hWnd: ?HWND,
-    message: UINT,
-    wParam: WPARAM,
-    lParam: LPARAM,
-    time: DWORD,
-    pt: POINT,
-    lPrivate: DWORD,
 };
 
 pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
