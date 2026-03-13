@@ -27,13 +27,15 @@ const DispatchMessageW = wnd.DispatchMessageW;
 const GetModuleHandleW = kernel32.GetModuleHandleW;
 const TranslateMessage = wnd.TranslateMessage;
 
+var main_hWnd: ?HWND = null;
+
 pub fn main() void {
     const PM_REMOVE = 0x0001;
     const WM_QUIT = 0x0012;
 
     const hInstance: ?HINSTANCE = @ptrCast(GetModuleHandleW(null));
 
-    _ = impl.createWindow(hInstance, wndproc);
+    main_hWnd = impl.createWindow(hInstance, wndproc);
 
     var msg: MSG = undefined;
     var exit_code: UINT = 0;
@@ -57,13 +59,16 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
     const WM_DESTROY = 0x0002;
     const WM_PAINT = 0x000F;
 
-    if (uMsg == WM_DESTROY) {
+    if (uMsg == WM_DESTROY and hWnd == main_hWnd) {
+        @branchHint(.unlikely);
         PostQuitMessage(0);
+        return 0;
     }
 
     switch (uMsg) {
         WM_PAINT => {
             renderText(hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+            return 0;
         },
         else => {},
     }
