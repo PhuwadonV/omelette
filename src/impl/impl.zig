@@ -15,35 +15,19 @@ const CreateWindowExW = wnd.CreateWindowExW;
 const RegisterClassExW = wnd.RegisterClassExW;
 
 pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
-    const CS_VREDRAW = 0x0001;
-    const CS_HREDRAW = 0x0002;
-    const CS_DBLCLKS = 0x0008;
-
-    const IDC_ARROW = 0x7F00;
-
-    const COLOR_WINDOW = 5;
-
-    const WS_MAXIMIZEBOX = 0x00010000;
-    const WS_MINIMIZEBOX = 0x00020000;
-    const WS_SYSMENU = 0x00080000;
-
-    const CW_USEDEFAULT = 0x80000000;
-
-    const SW_SHOWDEFAULT = 10;
-
     const wndClassName = spec.getWndClassName();
     const windowName = spec.getWindowName();
 
     const wcex = WNDCLASSEXW{
         .cbSize = @sizeOf(WNDCLASSEXW),
-        .style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
+        .style = wnd.CS_HREDRAW | wnd.CS_VREDRAW | wnd.CS_DBLCLKS,
         .lpfnWndProc = wndproc,
         .cbClsExtra = 0,
         .cbWndExtra = 0,
         .hInstance = hInstance,
         .hIcon = null,
-        .hCursor = LoadCursorW(null, @ptrFromInt(IDC_ARROW)),
-        .hbrBackground = @ptrFromInt(COLOR_WINDOW),
+        .hCursor = LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
+        .hbrBackground = @ptrFromInt(wnd.COLOR_WINDOW),
         .lpszMenuName = null,
         .lpszClassName = wndClassName,
         .hIconSm = null,
@@ -55,18 +39,18 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
         0,
         wndClassName,
         windowName,
-        WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
-        @bitCast(@as(c_uint, CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, CW_USEDEFAULT)),
+        wnd.WS_SYSMENU | wnd.WS_MINIMIZEBOX | wnd.WS_MAXIMIZEBOX,
+        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
+        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
+        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
+        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
         null,
         null,
         hInstance,
         null,
     );
 
-    _ = ShowWindow(hWnd, SW_SHOWDEFAULT);
+    _ = ShowWindow(hWnd, wnd.SW_SHOWDEFAULT);
     _ = UpdateWindow(hWnd);
 
     return hWnd;

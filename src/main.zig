@@ -30,9 +30,6 @@ const TranslateMessage = wnd.TranslateMessage;
 var main_hWnd: ?HWND = null;
 
 pub fn main() void {
-    const PM_REMOVE = 0x0001;
-    const WM_QUIT = 0x0012;
-
     const hInstance: ?HINSTANCE = @ptrCast(GetModuleHandleW(null));
 
     main_hWnd = impl.createWindow(hInstance, wndproc);
@@ -43,8 +40,8 @@ pub fn main() void {
     defer ExitProcess(exit_code);
 
     running: while (true) {
-        while (PeekMessageW(&msg, null, 0, 0, PM_REMOVE) != 0) {
-            if (msg.message == WM_QUIT) {
+        while (PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE) != 0) {
+            if (msg.message == wnd.WM_QUIT) {
                 exit_code = @intCast(msg.wParam);
                 break :running;
             }
@@ -56,17 +53,14 @@ pub fn main() void {
 }
 
 fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT {
-    const WM_DESTROY = 0x0002;
-    const WM_PAINT = 0x000F;
-
-    if (uMsg == WM_DESTROY and hWnd == main_hWnd) {
+    if (uMsg == wnd.WM_DESTROY and hWnd == main_hWnd) {
         @branchHint(.unlikely);
         PostQuitMessage(0);
         return 0;
     }
 
     switch (uMsg) {
-        WM_PAINT => {
+        wnd.WM_PAINT => {
             renderText(hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
             return 0;
         },

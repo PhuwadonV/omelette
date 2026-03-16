@@ -71,3 +71,25 @@ pub extern "user32" fn RegisterClassExW(lpWndClass: ?*const WNDCLASSEXW) callcon
 pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BOOL;
 
 pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
+
+pub const COLOR_WINDOW = 5;
+
+pub const CS_VREDRAW = 0x0001;
+pub const CS_HREDRAW = 0x0002;
+pub const CS_DBLCLKS = 0x0008;
+
+pub const CW_USEDEFAULT = 0x80000000;
+
+pub const IDC_ARROW = 0x7F00;
+
+pub const PM_REMOVE = 0x0001;
+
+pub const SW_SHOWDEFAULT = 10;
+
+pub const WS_MAXIMIZEBOX = 0x00010000;
+pub const WS_MINIMIZEBOX = 0x00020000;
+pub const WS_SYSMENU = 0x00080000;
+
+pub const WM_DESTROY = 0x0002;
+pub const WM_PAINT = 0x000F;
+pub const WM_QUIT = 0x0012;
