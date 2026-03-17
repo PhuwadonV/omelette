@@ -3,5 +3,6 @@
 - **Manage:**
 - **Rectify:**
 - **Refactor:**
+- **Research:**
 - **Reserve:**
 - **Result:**
