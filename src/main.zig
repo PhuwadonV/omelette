@@ -13,7 +13,10 @@ const WPARAM = windows.WPARAM;
 const LRESULT = windows.LRESULT;
 const HINSTANCE = windows.HINSTANCE;
 const PAINTSTRUCT = wnd.PAINTSTRUCT;
+const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
+const allocPrint = std.fmt.allocPrint;
+const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
 const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 
 const EndPaint = wnd.EndPaint;
@@ -64,7 +67,7 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
             renderText(hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
             return 0;
         },
-        else => {},
+        else => showUMsg(uMsg),
     }
 
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
@@ -76,4 +79,15 @@ fn renderText(hWnd: ?HWND, text: [:0]const u16) void {
     defer _ = EndPaint(hWnd, &paint);
 
     _ = TextOutW(hDc, 0, 0, text, @intCast(text.len));
+}
+
+fn showUMsg(uMsg: UINT) void {
+    var buffer: [64]u8 = undefined;
+    var fixed_buffer = FixedBufferAllocator.init(&buffer);
+    const allocator = fixed_buffer.allocator();
+
+    const text_u8 = allocPrint(allocator, "{d}", .{uMsg}) catch return;
+    const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
+
+    _ = wnd.MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
 }
