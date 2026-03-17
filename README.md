@@ -1,6 +1,6 @@
 ## Commit Convention
 - **Convention:**
 - **Manage:**
-- **Refactor:**
 - **Rectify:**
+- **Refactor:**
 - **Result:**
