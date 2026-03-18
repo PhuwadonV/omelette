@@ -86,7 +86,7 @@ fn showUMsg(uMsg: UINT) void {
     var fixed_buffer = FixedBufferAllocator.init(&buffer);
     const allocator = fixed_buffer.allocator();
 
-    const text_u8 = allocPrint(allocator, "{d}", .{uMsg}) catch return;
+    const text_u8 = allocPrint(allocator, "{x}", .{uMsg}) catch return;
     const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
 
     _ = wnd.MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
