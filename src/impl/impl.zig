@@ -8,11 +8,13 @@ const WNDPROC = wnd.WNDPROC;
 const HINSTANCE = windows.HINSTANCE;
 const WNDCLASSEXW = wnd.WNDCLASSEXW;
 
+const SetFocus = wnd.SetFocus;
 const ShowWindow = wnd.ShowWindow;
-const LoadCursorW = wnd.LoadCursorW;
 const UpdateWindow = wnd.UpdateWindow;
 const CreateWindowExW = wnd.CreateWindowExW;
+const GetSystemMetrics = wnd.GetSystemMetrics;
 const RegisterClassExW = wnd.RegisterClassExW;
+const SetForegroundWindow = wnd.SetForegroundWindow;
 
 pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
     const wndClassName = spec.getWndClassName();
@@ -20,14 +22,14 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
 
     const wcex = WNDCLASSEXW{
         .cbSize = @sizeOf(WNDCLASSEXW),
-        .style = wnd.CS_HREDRAW | wnd.CS_VREDRAW | wnd.CS_DBLCLKS,
+        .style = 0,
         .lpfnWndProc = wndproc,
         .cbClsExtra = 0,
         .cbWndExtra = 0,
         .hInstance = hInstance,
         .hIcon = null,
-        .hCursor = LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
-        .hbrBackground = @ptrFromInt(wnd.COLOR_WINDOW),
+        .hCursor = null,
+        .hbrBackground = null,
         .lpszMenuName = null,
         .lpszClassName = wndClassName,
         .hIconSm = null,
@@ -35,23 +37,27 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
 
     _ = RegisterClassExW(&wcex);
 
+    const screen_width = GetSystemMetrics(wnd.SM_CXSCREEN);
+    const screen_height = GetSystemMetrics(wnd.SM_CYSCREEN);
+
     const hWnd = CreateWindowExW(
-        0,
+        wnd.WS_EX_APPWINDOW,
         wndClassName,
         windowName,
-        wnd.WS_SYSMENU | wnd.WS_MINIMIZEBOX | wnd.WS_MAXIMIZEBOX,
-        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
-        @bitCast(@as(c_uint, wnd.CW_USEDEFAULT)),
+        wnd.WS_POPUP,
+        0,
+        0,
+        screen_width,
+        screen_height,
         null,
         null,
         hInstance,
         null,
     );
 
-    _ = ShowWindow(hWnd, wnd.SW_SHOWDEFAULT);
-    _ = UpdateWindow(hWnd);
+    _ = ShowWindow(hWnd, wnd.SW_SHOW);
+    _ = SetForegroundWindow(hWnd);
+    _ = SetFocus(hWnd);
 
     return hWnd;
 }
