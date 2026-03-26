@@ -22,6 +22,7 @@ const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 const EndPaint = wnd.EndPaint;
 const TextOutW = wnd.TextOutW;
 const BeginPaint = wnd.BeginPaint;
+const ShowWindow = wnd.ShowWindow;
 const ExitProcess = kernel32.ExitProcess;
 const PeekMessageW = wnd.PeekMessageW;
 const DefWindowProcW = wnd.DefWindowProcW;
@@ -37,6 +38,9 @@ pub fn main() void {
 
     main_hWnd = impl.createWindow(hInstance, wndproc);
 
+    _ = ShowWindow(main_hWnd, wnd.SW_SHOW);
+    renderText(main_hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+
     var msg: MSG = undefined;
     var exit_code: UINT = 0;
 
@@ -45,6 +49,7 @@ pub fn main() void {
     running: while (true) {
         while (PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE) != 0) {
             if (msg.message == wnd.WM_QUIT) {
+                @branchHint(.unlikely);
                 exit_code = @intCast(msg.wParam);
                 break :running;
             }
@@ -63,16 +68,13 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
     }
 
     switch (uMsg) {
-        wnd.WM_PAINT => {
-            renderText(hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
-            return 0;
-        },
         wnd.WM_CREATE => {},
         wnd.WM_MOVE => {},
         wnd.WM_SIZE => {},
         wnd.WM_ACTIVATE => {},
         wnd.WM_SETFOCUS => {},
         wnd.WM_KILLFOCUS => {},
+        wnd.WM_PAINT => {},
         wnd.WM_CLOSE => {},
         wnd.WM_QUERYOPEN => {},
         wnd.WM_ERASEBKGND => {},

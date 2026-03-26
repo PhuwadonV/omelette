@@ -8,13 +8,10 @@ const WNDPROC = wnd.WNDPROC;
 const HINSTANCE = windows.HINSTANCE;
 const WNDCLASSEXW = wnd.WNDCLASSEXW;
 
-const SetFocus = wnd.SetFocus;
-const ShowWindow = wnd.ShowWindow;
-const UpdateWindow = wnd.UpdateWindow;
+const LoadCursorW = wnd.LoadCursorW;
 const CreateWindowExW = wnd.CreateWindowExW;
 const GetSystemMetrics = wnd.GetSystemMetrics;
 const RegisterClassExW = wnd.RegisterClassExW;
-const SetForegroundWindow = wnd.SetForegroundWindow;
 
 pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
     const wndClassName = spec.getWndClassName();
@@ -28,7 +25,7 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
         .cbWndExtra = 0,
         .hInstance = hInstance,
         .hIcon = null,
-        .hCursor = null,
+        .hCursor = LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
         .hbrBackground = null,
         .lpszMenuName = null,
         .lpszClassName = wndClassName,
@@ -54,10 +51,6 @@ pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
         hInstance,
         null,
     );
-
-    _ = ShowWindow(hWnd, wnd.SW_SHOW);
-    _ = SetForegroundWindow(hWnd);
-    _ = SetFocus(hWnd);
 
     return hWnd;
 }
