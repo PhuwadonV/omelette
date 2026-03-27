@@ -5,10 +5,12 @@ const unicode = std.unicode;
 const windows = std.os.windows;
 const kernel32 = windows.kernel32;
 
+const HDC = windows.HDC;
 const MSG = wnd.MSG;
 const HWND = windows.HWND;
 const RECT = windows.RECT;
 const UINT = windows.UINT;
+const HBRUSH = windows.HBRUSH;
 const LPARAM = windows.LPARAM;
 const WPARAM = windows.WPARAM;
 const LRESULT = windows.LRESULT;
@@ -81,7 +83,7 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
         wnd.WM_KILLFOCUS => {},
         wnd.WM_GETTEXT => {},
         wnd.WM_PAINT => {
-            renderText(main_hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+            render(main_hWnd);
             return 0;
         },
         wnd.WM_CLOSE => {},
@@ -167,7 +169,7 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
     return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-fn renderText(hWnd: ?HWND, text: [:0]const u16) void {
+fn render(hWnd: ?HWND) void {
     var paint: PAINTSTRUCT = undefined;
     const hDc = BeginPaint(hWnd, &paint);
     defer _ = EndPaint(hWnd, &paint);
@@ -175,10 +177,18 @@ fn renderText(hWnd: ?HWND, text: [:0]const u16) void {
     const hBr = CreateSolidBrush(0x008080FF);
     defer _ = DeleteObject(hBr);
 
+    renderBackground(hWnd, hDc, hBr);
+    renderText(hDc, utf8ToUtf16LeStringLiteral("Hello, World"));
+}
+
+fn renderBackground(hWnd: ?HWND, hDc: ?HDC, hBr: ?HBRUSH) void {
     var rect: RECT = undefined;
 
     _ = GetClientRect(hWnd, &rect);
     _ = FillRect(hDc, &rect, hBr);
+}
+
+fn renderText(hDc: ?HDC, text: [:0]const u16) void {
     _ = TextOutW(hDc, 0, 0, text, @intCast(text.len));
 }
 
