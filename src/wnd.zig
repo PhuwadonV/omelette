@@ -58,6 +58,7 @@ pub const WNDCLASSEXW = extern struct {
 };
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
+pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_int;
 pub extern "user32" fn SetFocus(hWnd: ?HWND) ?HWND;
 pub extern "user32" fn BeginPaint(hWnd: ?HWND, lpPaint: ?*PAINTSTRUCT) callconv(.winapi) ?HDC;
 pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
@@ -65,6 +66,7 @@ pub extern "user32" fn LoadCursorW(hInstance: ?HINSTANCE, lpCursorName: ?LPCWSTR
 pub extern "user32" fn MessageBoxW(hWnd: ?HWND, lpText: ?LPCWSTR, lpCaption: ?LPCWSTR, uType: UINT) callconv(.winapi) c_int;
 pub extern "user32" fn PeekMessageW(lpMsg: ?*MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT, wRemoveMsg: UINT) callconv(.winapi) BOOL;
 pub extern "user32" fn UpdateWindow(hWnd: ?HWND) callconv(.winapi) BOOL;
+pub extern "user32" fn GetClientRect(hWnd: ?HWND, lpRect: ?*const RECT) BOOL;
 pub extern "user32" fn DefWindowProcW(hWnd: ?HWND, Msg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
 pub extern "user32" fn CreateWindowExW(dwExStyle: DWORD, lpClassName: ?LPCWSTR, lpWindowName: ?LPCWSTR, dwStyle: DWORD, X: c_int, Y: c_int, nWidth: c_int, nHeight: c_int, hWndParent: ?HWND, hMenu: ?HMENU, hInstance: ?HINSTANCE, lpParam: ?LPVOID) callconv(.winapi) ?HWND;
 pub extern "user32" fn PostQuitMessage(nExitCode: c_int) callconv(.winapi) void;
@@ -75,6 +77,8 @@ pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BO
 pub extern "user32" fn SetForegroundWindow(hWnd: ?HWND) BOOL;
 
 pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
+pub extern "gdi32" fn DeleteObject(?*anyopaque) callconv(.winapi) BOOL;
+pub extern "gdi32" fn CreateSolidBrush(color: DWORD) callconv(.winapi) HBRUSH;
 
 pub const COLOR_WINDOW = 5;
 
@@ -109,6 +113,7 @@ pub const WM_SIZE = 0x0005;
 pub const WM_ACTIVATE = 0x0006;
 pub const WM_SETFOCUS = 0x0007;
 pub const WM_KILLFOCUS = 0x0008;
+pub const WM_GETTEXT = 0x000D;
 pub const WM_PAINT = 0x000F;
 pub const WM_CLOSE = 0x0010;
 pub const WM_QUIT = 0x0012;

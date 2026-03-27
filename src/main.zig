@@ -7,6 +7,7 @@ const kernel32 = windows.kernel32;
 
 const MSG = wnd.MSG;
 const HWND = windows.HWND;
+const RECT = windows.RECT;
 const UINT = windows.UINT;
 const LPARAM = windows.LPARAM;
 const WPARAM = windows.WPARAM;
@@ -20,13 +21,18 @@ const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
 const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 
 const EndPaint = wnd.EndPaint;
+const FillRect = wnd.FillRect;
 const TextOutW = wnd.TextOutW;
 const BeginPaint = wnd.BeginPaint;
 const ShowWindow = wnd.ShowWindow;
 const ExitProcess = kernel32.ExitProcess;
+const MessageBoxW = wnd.MessageBoxW;
+const DeleteObject = wnd.DeleteObject;
 const PeekMessageW = wnd.PeekMessageW;
+const GetClientRect = wnd.GetClientRect;
 const DefWindowProcW = wnd.DefWindowProcW;
 const PostQuitMessage = wnd.PostQuitMessage;
+const CreateSolidBrush = wnd.CreateSolidBrush;
 const DispatchMessageW = wnd.DispatchMessageW;
 const GetModuleHandleW = kernel32.GetModuleHandleW;
 const TranslateMessage = wnd.TranslateMessage;
@@ -38,8 +44,7 @@ pub fn main() void {
 
     main_hWnd = impl.createWindow(hInstance, wndproc);
 
-    _ = ShowWindow(main_hWnd, wnd.SW_SHOW);
-    renderText(main_hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+    _ = ShowWindow(main_hWnd, wnd.SW_SHOWDEFAULT);
 
     var msg: MSG = undefined;
     var exit_code: UINT = 0;
@@ -74,7 +79,11 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
         wnd.WM_ACTIVATE => {},
         wnd.WM_SETFOCUS => {},
         wnd.WM_KILLFOCUS => {},
-        wnd.WM_PAINT => {},
+        wnd.WM_GETTEXT => {},
+        wnd.WM_PAINT => {
+            renderText(main_hWnd, utf8ToUtf16LeStringLiteral("Hello, World"));
+            return 0;
+        },
         wnd.WM_CLOSE => {},
         wnd.WM_QUERYOPEN => {},
         wnd.WM_ERASEBKGND => {},
@@ -163,6 +172,13 @@ fn renderText(hWnd: ?HWND, text: [:0]const u16) void {
     const hDc = BeginPaint(hWnd, &paint);
     defer _ = EndPaint(hWnd, &paint);
 
+    const hBr = CreateSolidBrush(0x008080FF);
+    defer _ = DeleteObject(hBr);
+
+    var rect: RECT = undefined;
+
+    _ = GetClientRect(hWnd, &rect);
+    _ = FillRect(hDc, &rect, hBr);
     _ = TextOutW(hDc, 0, 0, text, @intCast(text.len));
 }
 
@@ -174,5 +190,5 @@ fn showUMsg(uMsg: UINT) void {
     const text_u8 = allocPrint(allocator, "{x}", .{uMsg}) catch return;
     const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
 
-    _ = wnd.MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
+    _ = MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
 }
