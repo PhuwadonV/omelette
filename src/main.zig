@@ -1,8 +1,9 @@
 const std = @import("std");
-const wnd = @import("wnd.zig");
-const impl = @import("impl/impl.zig");
 const unicode = std.unicode;
 
+pub const wnd = @import("wnd.zig");
+
+const App = @import("app/App.zig");
 const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
 const allocPrint = std.fmt.allocPrint;
@@ -10,16 +11,12 @@ const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
 const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 
 var exit_code: wnd.UINT = 0;
-var main_hWnd: ?wnd.HWND = null;
+var app: App = undefined;
 
 pub fn main() void {
     defer wnd.ExitProcess(exit_code);
 
-    const hInstance: ?wnd.HINSTANCE = @ptrCast(wnd.GetModuleHandleW(null));
-
-    main_hWnd = impl.createWindow(hInstance, wndproc);
-
-    _ = wnd.ShowWindow(main_hWnd, wnd.SW_SHOWDEFAULT);
+    app = App.createApp(wndproc);
 
     var msg: wnd.MSG = undefined;
 
@@ -38,7 +35,7 @@ pub fn main() void {
 }
 
 fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPARAM) callconv(.winapi) wnd.LRESULT {
-    if (uMsg == wnd.WM_DESTROY and hWnd == main_hWnd) {
+    if (uMsg == wnd.WM_DESTROY and hWnd == app.hWnd) {
         @branchHint(.unlikely);
         wnd.PostQuitMessage(0);
         return 0;
@@ -53,7 +50,7 @@ fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPAR
         wnd.WM_KILLFOCUS => {},
         wnd.WM_GETTEXT => {},
         wnd.WM_PAINT => {
-            render(main_hWnd);
+            render(app.hWnd);
             return 0;
         },
         wnd.WM_CLOSE => {},

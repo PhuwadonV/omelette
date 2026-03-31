@@ -1,6 +1,7 @@
 const std = @import("std");
-const wnd = @import("../wnd.zig");
-const spec = @import("../spec/spec.zig");
+const wnd = root.wnd;
+const spec = @import("spec.zig");
+const root = @import("root");
 
 pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
     const wndclass_name = spec.getWndclassName();
