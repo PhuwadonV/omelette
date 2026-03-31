@@ -2,75 +2,45 @@ const std = @import("std");
 const wnd = @import("wnd.zig");
 const impl = @import("impl/impl.zig");
 const unicode = std.unicode;
-const windows = std.os.windows;
-const kernel32 = windows.kernel32;
 
-const HDC = windows.HDC;
-const MSG = wnd.MSG;
-const HWND = windows.HWND;
-const RECT = windows.RECT;
-const UINT = windows.UINT;
-const HBRUSH = windows.HBRUSH;
-const LPARAM = windows.LPARAM;
-const WPARAM = windows.WPARAM;
-const LRESULT = windows.LRESULT;
-const HINSTANCE = windows.HINSTANCE;
-const PAINTSTRUCT = wnd.PAINTSTRUCT;
 const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
 const allocPrint = std.fmt.allocPrint;
 const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
 const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 
-const EndPaint = wnd.EndPaint;
-const FillRect = wnd.FillRect;
-const TextOutW = wnd.TextOutW;
-const BeginPaint = wnd.BeginPaint;
-const ShowWindow = wnd.ShowWindow;
-const ExitProcess = kernel32.ExitProcess;
-const MessageBoxW = wnd.MessageBoxW;
-const DeleteObject = wnd.DeleteObject;
-const PeekMessageW = wnd.PeekMessageW;
-const GetClientRect = wnd.GetClientRect;
-const DefWindowProcW = wnd.DefWindowProcW;
-const PostQuitMessage = wnd.PostQuitMessage;
-const CreateSolidBrush = wnd.CreateSolidBrush;
-const DispatchMessageW = wnd.DispatchMessageW;
-const GetModuleHandleW = kernel32.GetModuleHandleW;
-const TranslateMessage = wnd.TranslateMessage;
-
-var main_hWnd: ?HWND = null;
+var exit_code: wnd.UINT = 0;
+var main_hWnd: ?wnd.HWND = null;
 
 pub fn main() void {
-    const hInstance: ?HINSTANCE = @ptrCast(GetModuleHandleW(null));
+    defer wnd.ExitProcess(exit_code);
+
+    const hInstance: ?wnd.HINSTANCE = @ptrCast(wnd.GetModuleHandleW(null));
 
     main_hWnd = impl.createWindow(hInstance, wndproc);
 
-    _ = ShowWindow(main_hWnd, wnd.SW_SHOWDEFAULT);
+    _ = wnd.ShowWindow(main_hWnd, wnd.SW_SHOWDEFAULT);
 
-    var msg: MSG = undefined;
-    var exit_code: UINT = 0;
-
-    defer ExitProcess(exit_code);
+    var msg: wnd.MSG = undefined;
 
     running: while (true) {
-        while (PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE) != 0) {
+        while (wnd.PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE) != 0) {
             if (msg.message == wnd.WM_QUIT) {
                 @branchHint(.unlikely);
                 exit_code = @intCast(msg.wParam);
                 break :running;
             }
 
-            _ = TranslateMessage(&msg);
-            _ = DispatchMessageW(&msg);
+            _ = wnd.TranslateMessage(&msg);
+            _ = wnd.DispatchMessageW(&msg);
         }
     }
 }
 
-fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT {
+fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPARAM) callconv(.winapi) wnd.LRESULT {
     if (uMsg == wnd.WM_DESTROY and hWnd == main_hWnd) {
         @branchHint(.unlikely);
-        PostQuitMessage(0);
+        wnd.PostQuitMessage(0);
         return 0;
     }
 
@@ -166,33 +136,33 @@ fn wndproc(hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.wi
         else => showUMsg(uMsg),
     }
 
-    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+    return wnd.DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-fn render(hWnd: ?HWND) void {
-    var paint: PAINTSTRUCT = undefined;
-    const hDc = BeginPaint(hWnd, &paint);
-    defer _ = EndPaint(hWnd, &paint);
+fn render(hWnd: ?wnd.HWND) void {
+    var paint: wnd.PAINTSTRUCT = undefined;
+    const hDc = wnd.BeginPaint(hWnd, &paint);
+    defer _ = wnd.EndPaint(hWnd, &paint);
 
-    const hBr = CreateSolidBrush(0x008080FF);
-    defer _ = DeleteObject(hBr);
+    const hBr = wnd.CreateSolidBrush(0x008080FF);
+    defer _ = wnd.DeleteObject(hBr);
 
     renderBackground(hWnd, hDc, hBr);
     renderText(hDc, utf8ToUtf16LeStringLiteral("Hello, World"));
 }
 
-fn renderBackground(hWnd: ?HWND, hDc: ?HDC, hBr: ?HBRUSH) void {
-    var rect: RECT = undefined;
+fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
+    var rect: wnd.RECT = undefined;
 
-    _ = GetClientRect(hWnd, &rect);
-    _ = FillRect(hDc, &rect, hBr);
+    _ = wnd.GetClientRect(hWnd, &rect);
+    _ = wnd.FillRect(hDc, &rect, hBr);
 }
 
-fn renderText(hDc: ?HDC, text: [:0]const u16) void {
-    _ = TextOutW(hDc, 0, 0, text, @intCast(text.len));
+fn renderText(hDc: ?wnd.HDC, text: [:0]const u16) void {
+    _ = wnd.TextOutW(hDc, 0, 0, text, @intCast(text.len));
 }
 
-fn showUMsg(uMsg: UINT) void {
+fn showUMsg(uMsg: wnd.UINT) void {
     var buffer: [64]u8 = undefined;
     var fixed_buffer = FixedBufferAllocator.init(&buffer);
     const allocator = fixed_buffer.allocator();
@@ -200,5 +170,5 @@ fn showUMsg(uMsg: UINT) void {
     const text_u8 = allocPrint(allocator, "{x}", .{uMsg}) catch return;
     const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
 
-    _ = MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
+    _ = wnd.MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
 }

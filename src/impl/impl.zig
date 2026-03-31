@@ -1,43 +1,32 @@
 const std = @import("std");
 const wnd = @import("../wnd.zig");
 const spec = @import("../spec/spec.zig");
-const windows = std.os.windows;
 
-const HWND = windows.HWND;
-const WNDPROC = wnd.WNDPROC;
-const HINSTANCE = windows.HINSTANCE;
-const WNDCLASSEXW = wnd.WNDCLASSEXW;
-
-const LoadCursorW = wnd.LoadCursorW;
-const CreateWindowExW = wnd.CreateWindowExW;
-const GetSystemMetrics = wnd.GetSystemMetrics;
-const RegisterClassExW = wnd.RegisterClassExW;
-
-pub fn createWindow(hInstance: ?HINSTANCE, wndproc: WNDPROC) ?HWND {
+pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
     const wndClassName = spec.getWndClassName();
     const windowName = spec.getWindowName();
 
-    const wcex = WNDCLASSEXW{
-        .cbSize = @sizeOf(WNDCLASSEXW),
+    const wcex = wnd.WNDCLASSEXW{
+        .cbSize = @sizeOf(wnd.WNDCLASSEXW),
         .style = 0,
         .lpfnWndProc = wndproc,
         .cbClsExtra = 0,
         .cbWndExtra = 0,
         .hInstance = hInstance,
         .hIcon = null,
-        .hCursor = LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
+        .hCursor = wnd.LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
         .hbrBackground = null,
         .lpszMenuName = null,
         .lpszClassName = wndClassName,
         .hIconSm = null,
     };
 
-    _ = RegisterClassExW(&wcex);
+    _ = wnd.RegisterClassExW(&wcex);
 
-    const screen_width = GetSystemMetrics(wnd.SM_CXSCREEN);
-    const screen_height = GetSystemMetrics(wnd.SM_CYSCREEN);
+    const screen_width = wnd.GetSystemMetrics(wnd.SM_CXSCREEN);
+    const screen_height = wnd.GetSystemMetrics(wnd.SM_CYSCREEN);
 
-    const hWnd = CreateWindowExW(
+    const hWnd = wnd.CreateWindowExW(
         wnd.WS_EX_APPWINDOW,
         wndClassName,
         windowName,

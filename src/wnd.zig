@@ -1,25 +1,26 @@
 const std = @import("std");
 const windows = std.os.windows;
+const kernel32 = windows.kernel32;
 
-const HDC = windows.HDC;
-const ATOM = windows.ATOM;
-const BOOL = windows.BOOL;
-const BYTE = windows.BYTE;
-const HWND = windows.HWND;
-const RECT = windows.RECT;
-const UINT = windows.UINT;
-const DWORD = windows.DWORD;
-const HICON = windows.HICON;
-const HMENU = windows.HMENU;
-const POINT = windows.POINT;
-const HBRUSH = windows.HBRUSH;
-const LPARAM = windows.LPARAM;
-const LPVOID = windows.LPVOID;
-const WPARAM = windows.WPARAM;
-const HCURSOR = windows.HCURSOR;
-const LPCWSTR = windows.LPCWSTR;
-const LRESULT = windows.LRESULT;
-const HINSTANCE = windows.HINSTANCE;
+pub const HDC = windows.HDC;
+pub const ATOM = windows.ATOM;
+pub const BOOL = windows.BOOL;
+pub const BYTE = windows.BYTE;
+pub const HWND = windows.HWND;
+pub const RECT = windows.RECT;
+pub const UINT = windows.UINT;
+pub const DWORD = windows.DWORD;
+pub const HICON = windows.HICON;
+pub const HMENU = windows.HMENU;
+pub const POINT = windows.POINT;
+pub const HBRUSH = windows.HBRUSH;
+pub const LPARAM = windows.LPARAM;
+pub const LPVOID = windows.LPVOID;
+pub const WPARAM = windows.WPARAM;
+pub const HCURSOR = windows.HCURSOR;
+pub const LPCWSTR = windows.LPCWSTR;
+pub const LRESULT = windows.LRESULT;
+pub const HINSTANCE = windows.HINSTANCE;
 
 pub const MSG = extern struct {
     hWnd: ?HWND,
@@ -56,6 +57,9 @@ pub const WNDCLASSEXW = extern struct {
     lpszClassName: ?LPCWSTR,
     hIconSm: ?HICON,
 };
+
+pub const ExitProcess = kernel32.ExitProcess;
+pub const GetModuleHandleW = kernel32.GetModuleHandleW;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
 pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_int;
