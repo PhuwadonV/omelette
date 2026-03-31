@@ -3,8 +3,8 @@ const wnd = @import("../wnd.zig");
 const spec = @import("../spec/spec.zig");
 
 pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
-    const wndClassName = spec.getWndClassName();
-    const windowName = spec.getWindowName();
+    const wndclass_name = spec.getWndclassName();
+    const window_name = spec.getWindowName();
 
     const wcex = wnd.WNDCLASSEXW{
         .cbSize = @sizeOf(wnd.WNDCLASSEXW),
@@ -17,7 +17,7 @@ pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
         .hCursor = wnd.LoadCursorW(null, @ptrFromInt(wnd.IDC_ARROW)),
         .hbrBackground = null,
         .lpszMenuName = null,
-        .lpszClassName = wndClassName,
+        .lpszClassName = wndclass_name,
         .hIconSm = null,
     };
 
@@ -28,8 +28,8 @@ pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
 
     const hWnd = wnd.CreateWindowExW(
         wnd.WS_EX_APPWINDOW,
-        wndClassName,
-        windowName,
+        wndclass_name,
+        window_name,
         wnd.WS_POPUP,
         0,
         0,
