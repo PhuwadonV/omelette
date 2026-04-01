@@ -1,9 +1,8 @@
-const std = @import("std");
 const wnd = root.wnd;
 const spec = @import("spec.zig");
 const root = @import("root");
 
-pub fn createWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
+pub fn createBorderlessFullscreenWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
     const wndclass_name = spec.getWndclassName();
     const window_name = spec.getWindowName();
 

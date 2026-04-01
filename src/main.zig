@@ -1,9 +1,10 @@
 const std = @import("std");
 const unicode = std.unicode;
+const window = @import("window/window.zig");
 
 pub const wnd = @import("wnd.zig");
 
-const App = @import("app/App.zig");
+const MainWindow = window.MainWindow;
 const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
 const allocPrint = std.fmt.allocPrint;
@@ -11,12 +12,13 @@ const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
 const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
 
 var exit_code: wnd.UINT = 0;
-var app: App = undefined;
+var main_window: MainWindow = undefined;
 
 pub fn main() void {
     defer wnd.ExitProcess(exit_code);
 
-    app = App.createApp(wndproc);
+    main_window = MainWindow.create(wndproc);
+    main_window.notifyReady();
 
     var msg: wnd.MSG = undefined;
 
@@ -35,8 +37,9 @@ pub fn main() void {
 }
 
 fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPARAM) callconv(.winapi) wnd.LRESULT {
-    if (uMsg == wnd.WM_DESTROY and hWnd == app.hWnd) {
+    if (uMsg == wnd.WM_DESTROY and hWnd == main_window.hWnd) {
         @branchHint(.unlikely);
+        main_window.notifyInvalid();
         wnd.PostQuitMessage(0);
         return 0;
     }
@@ -50,7 +53,7 @@ fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPAR
         wnd.WM_KILLFOCUS => {},
         wnd.WM_GETTEXT => {},
         wnd.WM_PAINT => {
-            render(app.hWnd);
+            render(main_window.hWnd);
             return 0;
         },
         wnd.WM_CLOSE => {},
