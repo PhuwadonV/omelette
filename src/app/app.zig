@@ -1,4 +1,5 @@
 const std = @import("std");
+const vkh = root.vkh;
 const wnd = root.wnd;
 const root = @import("root");
 const window = root.window;
@@ -127,7 +128,34 @@ fn render(hWnd: ?wnd.HWND) void {
     defer _ = wnd.DeleteObject(hBr);
 
     renderBackground(hWnd, hDc, hBr);
-    renderText(hDc, utf8ToUtf16LeStringLiteral("Hello, World"));
+
+    const vk_version = vkh.getApiVersion() catch return;
+
+    var buffer: [256]u8 = undefined;
+    var fixed_buffer = FixedBufferAllocator.init(&buffer);
+    const allocator = fixed_buffer.allocator();
+
+    const format =
+        \\Variant = {d}, 
+        \\Major = {d}, 
+        \\Minor = {d}, 
+        \\Patch = {d}
+    ;
+
+    const text_u8 = allocPrint(
+        allocator,
+        format,
+        .{
+            vk_version.variant,
+            vk_version.major,
+            vk_version.minor,
+            vk_version.patch,
+        },
+    ) catch return;
+
+    const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
+
+    renderText(hDc, text_u16);
 }
 
 fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
