@@ -17,7 +17,7 @@ pub fn main() void {
 }
 
 fn run() !wnd.UINT {
-    main_window = MainWindow.create(app.getMainWndproc(&main_window));
+    main_window = try MainWindow.create(app.getMainWndproc(&main_window));
     main_window.notifyReady();
 
     var exit_code: wnd.UINT = 0;

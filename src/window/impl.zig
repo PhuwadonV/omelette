@@ -2,7 +2,7 @@ const wnd = root.wnd;
 const spec = @import("spec.zig");
 const root = @import("root");
 
-pub fn createBorderlessFullscreenWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) ?wnd.HWND {
+pub fn createBorderlessFullscreenWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.WNDPROC) !?wnd.HWND {
     const wndclass_name = spec.getWndclassName();
     const window_name = spec.getWindowName();
 
@@ -21,7 +21,9 @@ pub fn createBorderlessFullscreenWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.
         .hIconSm = null,
     };
 
-    _ = wnd.RegisterClassExW(&wcex);
+    if (wnd.RegisterClassExW(&wcex) == 0) {
+        return error.WindowClassRegistrationFailed;
+    }
 
     const screen_width = wnd.GetSystemMetrics(wnd.SM_CXSCREEN);
     const screen_height = wnd.GetSystemMetrics(wnd.SM_CYSCREEN);
@@ -40,6 +42,10 @@ pub fn createBorderlessFullscreenWindow(hInstance: ?wnd.HINSTANCE, wndproc: wnd.
         hInstance,
         null,
     );
+
+    if (hWnd == null) {
+        return error.WindowCreationFailed;
+    }
 
     return hWnd;
 }

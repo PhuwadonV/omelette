@@ -13,9 +13,9 @@ pub const MainWindow = struct {
     hWnd: ?wnd.HWND = null,
     status: Status = .invalid,
 
-    pub fn create(wndproc: wnd.WNDPROC) MainWindow {
+    pub fn create(wndproc: wnd.WNDPROC) !MainWindow {
         const hInstance: ?wnd.HINSTANCE = @ptrCast(wnd.GetModuleHandleW(null));
-        const hWnd = impl.createBorderlessFullscreenWindow(hInstance, wndproc);
+        const hWnd = try impl.createBorderlessFullscreenWindow(hInstance, wndproc);
 
         return MainWindow{
             .hInstance = hInstance,
