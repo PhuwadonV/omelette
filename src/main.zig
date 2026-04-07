@@ -9,13 +9,18 @@ const MainWindow = window.MainWindow;
 var main_window: MainWindow = undefined;
 
 pub fn main() void {
-    var exit_code: wnd.UINT = 0;
+    if (run()) |exit_code| {
+        wnd.ExitProcess(exit_code);
+    } else |_| {
+        wnd.ExitProcess(1);
+    }
+}
 
-    defer wnd.ExitProcess(exit_code);
-
+fn run() !wnd.UINT {
     main_window = MainWindow.create(app.getMainWndproc(&main_window));
     main_window.notifyReady();
 
+    var exit_code: wnd.UINT = 0;
     var msg: wnd.MSG = undefined;
 
     running: while (true) {
@@ -30,4 +35,6 @@ pub fn main() void {
             _ = wnd.DispatchMessageW(&msg);
         }
     }
+
+    return exit_code;
 }
