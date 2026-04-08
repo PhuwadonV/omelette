@@ -59,30 +59,6 @@ pub const WNDCLASSEXW = extern struct {
     hIconSm: ?HICON,
 };
 
-pub const ExitProcess = kernel32.ExitProcess;
-pub const GetModuleHandleW = kernel32.GetModuleHandleW;
-
-pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
-pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_int;
-pub extern "user32" fn BeginPaint(hWnd: ?HWND, lpPaint: ?*PAINTSTRUCT) callconv(.winapi) ?HDC;
-pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
-pub extern "user32" fn LoadCursorW(hInstance: ?HINSTANCE, lpCursorName: ?LPCWSTR) callconv(.winapi) ?HCURSOR;
-pub extern "user32" fn MessageBoxA(hWnd: ?HWND, lpText: ?LPCSTR, lpCaption: ?LPCSTR, uType: UINT) callconv(.winapi) c_int;
-pub extern "user32" fn MessageBoxW(hWnd: ?HWND, lpText: ?LPCWSTR, lpCaption: ?LPCWSTR, uType: UINT) callconv(.winapi) c_int;
-pub extern "user32" fn PeekMessageW(lpMsg: ?*MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT, wRemoveMsg: UINT) callconv(.winapi) BOOL;
-pub extern "user32" fn GetClientRect(hWnd: ?HWND, lpRect: ?*const RECT) BOOL;
-pub extern "user32" fn DefWindowProcW(hWnd: ?HWND, Msg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
-pub extern "user32" fn CreateWindowExW(dwExStyle: DWORD, lpClassName: ?LPCWSTR, lpWindowName: ?LPCWSTR, dwStyle: DWORD, X: c_int, Y: c_int, nWidth: c_int, nHeight: c_int, hWndParent: ?HWND, hMenu: ?HMENU, hInstance: ?HINSTANCE, lpParam: ?LPVOID) callconv(.winapi) ?HWND;
-pub extern "user32" fn PostQuitMessage(nExitCode: c_int) callconv(.winapi) void;
-pub extern "user32" fn DispatchMessageW(lpMsg: ?*const MSG) callconv(.winapi) LRESULT;
-pub extern "user32" fn GetSystemMetrics(nIndex: c_int) c_int;
-pub extern "user32" fn RegisterClassExW(lpWndClass: ?*const WNDCLASSEXW) callconv(.winapi) ATOM;
-pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BOOL;
-
-pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
-pub extern "gdi32" fn DeleteObject(?*anyopaque) callconv(.winapi) BOOL;
-pub extern "gdi32" fn CreateSolidBrush(color: DWORD) callconv(.winapi) HBRUSH;
-
 pub const MB_OK = 0x00000000;
 
 pub const IDC_ARROW = 0x7F00;
@@ -185,3 +161,27 @@ pub const WM_IME_REQUEST = 0x0288;
 pub const WM_NCMOUSELEAVE = 0x02A2;
 pub const WM_APPCOMMAND = 0x0319;
 pub const WM_DWMNCRENDERINGCHANGED = 0x031F;
+
+pub const ExitProcess = kernel32.ExitProcess;
+pub const GetModuleHandleW = kernel32.GetModuleHandleW;
+
+pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
+pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_int;
+pub extern "user32" fn BeginPaint(hWnd: ?HWND, lpPaint: ?*PAINTSTRUCT) callconv(.winapi) ?HDC;
+pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
+pub extern "user32" fn LoadCursorW(hInstance: ?HINSTANCE, lpCursorName: ?LPCWSTR) callconv(.winapi) ?HCURSOR;
+pub extern "user32" fn MessageBoxA(hWnd: ?HWND, lpText: ?LPCSTR, lpCaption: ?LPCSTR, uType: UINT) callconv(.winapi) c_int;
+pub extern "user32" fn MessageBoxW(hWnd: ?HWND, lpText: ?LPCWSTR, lpCaption: ?LPCWSTR, uType: UINT) callconv(.winapi) c_int;
+pub extern "user32" fn PeekMessageW(lpMsg: ?*MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT, wRemoveMsg: UINT) callconv(.winapi) BOOL;
+pub extern "user32" fn GetClientRect(hWnd: ?HWND, lpRect: ?*const RECT) BOOL;
+pub extern "user32" fn DefWindowProcW(hWnd: ?HWND, Msg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
+pub extern "user32" fn CreateWindowExW(dwExStyle: DWORD, lpClassName: ?LPCWSTR, lpWindowName: ?LPCWSTR, dwStyle: DWORD, X: c_int, Y: c_int, nWidth: c_int, nHeight: c_int, hWndParent: ?HWND, hMenu: ?HMENU, hInstance: ?HINSTANCE, lpParam: ?LPVOID) callconv(.winapi) ?HWND;
+pub extern "user32" fn PostQuitMessage(nExitCode: c_int) callconv(.winapi) void;
+pub extern "user32" fn DispatchMessageW(lpMsg: ?*const MSG) callconv(.winapi) LRESULT;
+pub extern "user32" fn GetSystemMetrics(nIndex: c_int) c_int;
+pub extern "user32" fn RegisterClassExW(lpWndClass: ?*const WNDCLASSEXW) callconv(.winapi) ATOM;
+pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BOOL;
+
+pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
+pub extern "gdi32" fn DeleteObject(?*anyopaque) callconv(.winapi) BOOL;
+pub extern "gdi32" fn CreateSolidBrush(color: DWORD) callconv(.winapi) HBRUSH;
