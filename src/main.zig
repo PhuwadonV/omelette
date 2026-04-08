@@ -1,5 +1,6 @@
 pub const vk = @import("vk.zig");
 pub const app = @import("app/app.zig");
+pub const dbg = @import("dbg/dbg.zig");
 pub const vkh = @import("vkh.zig");
 pub const wnd = @import("wnd.zig");
 pub const window = @import("window/window.zig");

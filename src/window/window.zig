@@ -2,6 +2,8 @@ const wnd = root.wnd;
 const impl = @import("impl.zig");
 const root = @import("root");
 
+pub const spec = @import("spec.zig");
+
 pub const MainWindow = struct {
     const Status = enum {
         invalid,

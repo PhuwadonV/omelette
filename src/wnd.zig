@@ -15,6 +15,7 @@ pub const HMENU = windows.HMENU;
 pub const POINT = windows.POINT;
 pub const HBRUSH = windows.HBRUSH;
 pub const LPARAM = windows.LPARAM;
+pub const LPCSTR = windows.LPCSTR;
 pub const LPVOID = windows.LPVOID;
 pub const WPARAM = windows.WPARAM;
 pub const HCURSOR = windows.HCURSOR;
@@ -66,6 +67,7 @@ pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_i
 pub extern "user32" fn BeginPaint(hWnd: ?HWND, lpPaint: ?*PAINTSTRUCT) callconv(.winapi) ?HDC;
 pub extern "user32" fn ShowWindow(hWnd: ?HWND, nCmdShow: c_int) callconv(.winapi) BOOL;
 pub extern "user32" fn LoadCursorW(hInstance: ?HINSTANCE, lpCursorName: ?LPCWSTR) callconv(.winapi) ?HCURSOR;
+pub extern "user32" fn MessageBoxA(hWnd: ?HWND, lpText: ?LPCSTR, lpCaption: ?LPCSTR, uType: UINT) callconv(.winapi) c_int;
 pub extern "user32" fn MessageBoxW(hWnd: ?HWND, lpText: ?LPCWSTR, lpCaption: ?LPCWSTR, uType: UINT) callconv(.winapi) c_int;
 pub extern "user32" fn PeekMessageW(lpMsg: ?*MSG, hWnd: ?HWND, wMsgFilterMin: UINT, wMsgFilterMax: UINT, wRemoveMsg: UINT) callconv(.winapi) BOOL;
 pub extern "user32" fn GetClientRect(hWnd: ?HWND, lpRect: ?*const RECT) BOOL;
@@ -80,6 +82,8 @@ pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BO
 pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
 pub extern "gdi32" fn DeleteObject(?*anyopaque) callconv(.winapi) BOOL;
 pub extern "gdi32" fn CreateSolidBrush(color: DWORD) callconv(.winapi) HBRUSH;
+
+pub const MB_OK = 0x00000000;
 
 pub const IDC_ARROW = 0x7F00;
 

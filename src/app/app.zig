@@ -5,6 +5,8 @@ const root = @import("root");
 const window = root.window;
 const unicode = std.unicode;
 
+pub const spec = @import("spec.zig");
+
 const MainWindow = window.MainWindow;
 const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
