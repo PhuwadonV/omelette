@@ -25,10 +25,10 @@ pub fn build(b: *std.Build) !void {
         .win32_manifest = b.path("assets/platforms/windows/win32.manifest"),
     });
 
+    exe.root_module.error_tracing = if (dev_mode) true else null;
     exe.root_module.addOptions("config", options);
 
     exe.subsystem = .Windows;
-
     exe.addLibraryPath(.{ .cwd_relative = vk_lib_path });
     exe.linkSystemLibrary("vulkan-1");
 

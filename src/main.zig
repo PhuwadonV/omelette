@@ -1,3 +1,6 @@
+const std = @import("std");
+const debug = std.debug;
+
 pub const vk = @import("vk.zig");
 pub const app = @import("app/app.zig");
 pub const dbg = @import("dbg/dbg.zig");
@@ -7,12 +10,19 @@ pub const window = @import("window/window.zig");
 
 const MainWindow = window.MainWindow;
 
+pub const panic = debug.FullPanic(dbg.panic);
+
 var main_window: MainWindow = undefined;
 
 pub fn main() void {
     if (run()) |exit_code| {
         wnd.ExitProcess(exit_code);
-    } else |_| {
+    } else |err| {
+        if (@errorReturnTrace()) |stack_trace| {
+            dbg.logStackTrace(stack_trace);
+        }
+
+        dbg.showError(err);
         wnd.ExitProcess(1);
     }
 }
