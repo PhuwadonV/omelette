@@ -6,9 +6,14 @@ const allocPrint = std.fmt.allocPrint;
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+    const dev_mode = b.option(bool, "dev", "Developer mode") orelse (optimize == .Debug);
     const env_map = getEnvMap(b.allocator) catch @panic("Failed to get environment variables");
     const vk_sdk_path = if (env_map.get("VK_SDK_PATH")) |path| path else return error.VkSdkPathRequired;
     const vk_lib_path = try allocPrint(b.allocator, "{s}/lib", .{vk_sdk_path});
+
+    const options = b.addOptions();
+
+    options.addOption(bool, "dev_mode", dev_mode);
 
     const exe = b.addExecutable(.{
         .name = "Omelette",
@@ -19,6 +24,8 @@ pub fn build(b: *std.Build) !void {
         }),
         .win32_manifest = b.path("assets/platforms/windows/win32.manifest"),
     });
+
+    exe.root_module.addOptions("config", options);
 
     exe.subsystem = .Windows;
 
