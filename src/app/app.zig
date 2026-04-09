@@ -113,6 +113,7 @@ pub fn getMainWndproc(comptime main_window: *MainWindow) wnd.WNDPROC {
                 wnd.WM_NCMOUSELEAVE => {},
                 wnd.WM_APPCOMMAND => {},
                 wnd.WM_DWMNCRENDERINGCHANGED => {},
+                wnd.WM_DWMCOLORIZATIONCOLORCHANGED => {},
                 else => showUMsg(uMsg),
             }
 

@@ -165,6 +165,7 @@ pub const WM_IME_REQUEST = 0x0288;
 pub const WM_NCMOUSELEAVE = 0x02A2;
 pub const WM_APPCOMMAND = 0x0319;
 pub const WM_DWMNCRENDERINGCHANGED = 0x031F;
+pub const WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
 
 pub const ExitProcess = kernel32.ExitProcess;
 pub const GetModuleHandleW = kernel32.GetModuleHandleW;
