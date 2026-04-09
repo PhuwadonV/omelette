@@ -60,6 +60,10 @@ pub const WNDCLASSEXW = extern struct {
 };
 
 pub const MB_OK = 0x00000000;
+pub const MB_YESNO = 0x00000004;
+pub const MB_ICONERROR = 0x00000010;
+
+pub const IDNO = 7;
 
 pub const IDC_ARROW = 0x7F00;
 
