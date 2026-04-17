@@ -8,10 +8,12 @@ pub const vkh = @import("vkh.zig");
 pub const wnd = @import("wnd.zig");
 pub const window = @import("window/window.zig");
 
+const App = app.App(&main_window);
 const MainWindow = window.MainWindow;
 
 pub const panic = debug.FullPanic(dbg.panic);
 
+var main_app = App.create();
 var main_window: MainWindow = undefined;
 
 pub fn main() void {
@@ -28,7 +30,7 @@ pub fn main() void {
 }
 
 fn run() !wnd.UINT {
-    main_window = try MainWindow.create(app.getMainWndproc(&main_window));
+    main_window = try MainWindow.create(main_app.getMainWndproc());
     main_window.notifyReady();
 
     var exit_code: wnd.UINT = 0;
