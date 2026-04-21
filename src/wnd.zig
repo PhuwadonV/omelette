@@ -7,20 +7,20 @@ pub const ATOM = windows.ATOM;
 pub const BOOL = windows.BOOL;
 pub const BYTE = windows.BYTE;
 pub const HWND = windows.HWND;
-pub const RECT = windows.RECT;
+pub const LONG = windows.LONG;
 pub const UINT = windows.UINT;
 pub const DWORD = windows.DWORD;
 pub const HICON = windows.HICON;
 pub const HMENU = windows.HMENU;
-pub const POINT = windows.POINT;
 pub const HBRUSH = windows.HBRUSH;
 pub const LPARAM = windows.LPARAM;
 pub const LPCSTR = windows.LPCSTR;
 pub const LPVOID = windows.LPVOID;
-pub const WPARAM = windows.WPARAM;
+pub const WPARAM = usize;
 pub const HCURSOR = windows.HCURSOR;
+pub const HMODULE = windows.HMODULE;
 pub const LPCWSTR = windows.LPCWSTR;
-pub const LRESULT = windows.LRESULT;
+pub const LRESULT = isize;
 pub const HINSTANCE = windows.HINSTANCE;
 
 pub const MSG = extern struct {
@@ -31,6 +31,18 @@ pub const MSG = extern struct {
     time: DWORD,
     pt: POINT,
     lPrivate: DWORD,
+};
+
+pub const RECT = extern struct {
+    left: LONG,
+    top: LONG,
+    right: LONG,
+    bottom: LONG,
+};
+
+pub const POINT = extern struct {
+    x: LONG,
+    y: LONG,
 };
 
 pub const WNDPROC = *const fn (hWnd: ?HWND, uMsg: UINT, wParam: WPARAM, lParam: LPARAM) callconv(.winapi) LRESULT;
@@ -140,8 +152,8 @@ pub const WM_DPICHANGED = 0x02E0;
 pub const WM_APPCOMMAND = 0x0319;
 pub const WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
 
-pub const ExitProcess = kernel32.ExitProcess;
-pub const GetModuleHandleW = kernel32.GetModuleHandleW;
+pub extern "kernel32" fn ExitProcess(exit_code: UINT) callconv(.winapi) noreturn;
+pub extern "kernel32" fn GetModuleHandleW(lpModuleName: ?LPCWSTR) callconv(.winapi) ?HMODULE;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
 pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) c_int;
