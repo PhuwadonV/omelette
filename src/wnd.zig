@@ -153,6 +153,7 @@ pub const WM_APPCOMMAND = 0x0319;
 pub const WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
 
 pub extern "kernel32" fn ExitProcess(exit_code: UINT) callconv(.winapi) noreturn;
+pub extern "kernel32" fn AttachConsole(dwProcessId: DWORD) callconv(.winapi) BOOL;
 pub extern "kernel32" fn GetModuleHandleW(lpModuleName: ?LPCWSTR) callconv(.winapi) ?HMODULE;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;

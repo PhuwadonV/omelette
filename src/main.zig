@@ -1,5 +1,6 @@
 const std = @import("std");
 const debug = std.debug;
+const config = @import("config");
 
 pub const vk = @import("vk.zig");
 pub const app = @import("app/app.zig");
@@ -17,11 +18,13 @@ var main_app = App.create();
 var main_window: MainWindow = undefined;
 
 pub fn main() void {
+    if (config.dev_mode) _ = wnd.AttachConsole(0xFFFFFFFF);
+
     if (run()) |exit_code| {
         wnd.ExitProcess(exit_code);
     } else |err| {
         if (@errorReturnTrace()) |stack_trace| {
-            dbg.logStackTrace(stack_trace);
+            debug.dumpErrorReturnTrace(stack_trace);
         }
 
         dbg.showError(err);
