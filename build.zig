@@ -1,14 +1,12 @@
 const std = @import("std");
 
-const getEnvMap = std.process.getEnvMap;
 const allocPrint = std.fmt.allocPrint;
 
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const dev_mode = b.option(bool, "dev", "Developer mode") orelse (optimize == .Debug);
-    const env_map = getEnvMap(b.allocator) catch @panic("Failed to get environment variables");
-    const vk_sdk_path = if (env_map.get("VK_SDK_PATH")) |path| path else return error.VkSdkPathRequired;
+    const vk_sdk_path = if (b.graph.environ_map.get("VK_SDK_PATH")) |path| path else return error.VkSdkPathRequired;
     const vk_lib_path = try allocPrint(b.allocator, "{s}/lib", .{vk_sdk_path});
 
     const options = b.addOptions();
@@ -27,10 +25,8 @@ pub fn build(b: *std.Build) !void {
 
     exe.root_module.error_tracing = if (dev_mode) true else null;
     exe.root_module.addOptions("config", options);
-
-    exe.subsystem = .Windows;
-    exe.addLibraryPath(.{ .cwd_relative = vk_lib_path });
-    exe.linkSystemLibrary("vulkan-1");
+    exe.root_module.addLibraryPath(.{ .cwd_relative = vk_lib_path });
+    exe.root_module.linkSystemLibrary("vulkan-1", .{});
 
     b.installArtifact(exe);
 
