@@ -10,10 +10,6 @@ pub const spec = @import("spec.zig");
 const MainWindow = window.MainWindow;
 const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
-const allocPrint = std.fmt.allocPrint;
-const utf8ToUtf16LeAllocZ = unicode.utf8ToUtf16LeAllocZ;
-const utf8ToUtf16LeStringLiteral = unicode.utf8ToUtf16LeStringLiteral;
-
 pub fn App(comptime main_window: *MainWindow) type {
     return struct {
         hBr: ?wnd.HBRUSH,
@@ -130,7 +126,7 @@ pub fn App(comptime main_window: *MainWindow) type {
                 \\Patch = {d}
             ;
 
-            const text_u8 = allocPrint(
+            const text_u8 = std.fmt.allocPrint(
                 allocator,
                 format,
                 .{
@@ -141,7 +137,7 @@ pub fn App(comptime main_window: *MainWindow) type {
                 },
             ) catch return;
 
-            const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
+            const text_u16 = unicode.utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
 
             renderText(hDc, text_u16);
         }
@@ -172,8 +168,8 @@ fn showUMsg(uMsg: wnd.UINT) void {
     var fixed_buffer = FixedBufferAllocator.init(&buffer);
     const allocator = fixed_buffer.allocator();
 
-    const text_u8 = allocPrint(allocator, "{x}", .{uMsg}) catch return;
-    const text_u16 = utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
+    const text_u8 = std.fmt.allocPrint(allocator, "{x}", .{uMsg}) catch return;
+    const text_u16 = unicode.utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
 
-    _ = wnd.MessageBoxW(null, text_u16, utf8ToUtf16LeStringLiteral("uMsg"), 0);
+    _ = wnd.MessageBoxW(null, text_u16, unicode.utf8ToUtf16LeStringLiteral("uMsg"), 0);
 }
