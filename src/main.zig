@@ -40,7 +40,7 @@ fn run() !wnd.UINT {
     var msg: wnd.MSG = undefined;
 
     running: while (true) {
-        while (wnd.PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE) != .FALSE) {
+        while (wnd.PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE).toBool()) {
             if (msg.message == wnd.WM_QUIT) {
                 @branchHint(.unlikely);
                 exit_code = @intCast(msg.wParam);

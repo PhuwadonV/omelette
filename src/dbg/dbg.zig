@@ -25,21 +25,14 @@ pub fn showMsgW(msg: [:0]const u16) void {
 }
 
 pub fn showErrorMsg(msg: [:0]const u8) void {
-    if (config.dev_mode) {
-        if (wnd.MessageBoxA(
-            null,
-            msg,
-            "Skip this error breakpoint?",
-            wnd.MB_YESNO | wnd.MB_ICONERROR,
-        ) == wnd.IDNO) @breakpoint();
-    } else {
-        _ = wnd.MessageBoxA(
-            null,
-            msg,
-            app.spec.getAppTitle(),
-            wnd.MB_ICONERROR,
-        );
-    }
+    _ = wnd.MessageBoxA(
+        null,
+        msg,
+        app.spec.getAppTitle(),
+        wnd.MB_ICONERROR,
+    );
+
+    if (config.dev_mode and wnd.IsDebuggerPresent().toBool()) @breakpoint();
 }
 
 pub fn showError(err: anyerror) void {

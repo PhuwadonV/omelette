@@ -71,10 +71,7 @@ pub const WNDCLASSEXW = extern struct {
 };
 
 pub const MB_OK = 0x00000000;
-pub const MB_YESNO = 0x00000004;
 pub const MB_ICONERROR = 0x00000010;
-
-pub const IDNO = 7;
 
 pub const IDC_ARROW = 0x7F00;
 
@@ -154,6 +151,7 @@ pub const WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
 pub extern "kernel32" fn ExitProcess(exit_code: UINT) callconv(.winapi) noreturn;
 pub extern "kernel32" fn AttachConsole(dwProcessId: DWORD) callconv(.winapi) BOOL;
 pub extern "kernel32" fn GetModuleHandleW(lpModuleName: ?LPCWSTR) callconv(.winapi) ?HMODULE;
+pub extern "kernel32" fn IsDebuggerPresent() callconv(.winapi) BOOL;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
 pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) callconv(.winapi) c_int;
