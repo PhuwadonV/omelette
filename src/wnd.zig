@@ -1,6 +1,5 @@
 const std = @import("std");
 const windows = std.os.windows;
-const kernel32 = windows.kernel32;
 
 pub const HDC = windows.HDC;
 pub const ATOM = windows.ATOM;
