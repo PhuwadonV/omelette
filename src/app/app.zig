@@ -164,7 +164,7 @@ fn renderText(hDc: ?wnd.HDC, text: [:0]const u16) void {
 }
 
 fn showUMsg(uMsg: wnd.UINT) void {
-    var buffer: [64]u8 = undefined;
+    var buffer: [256]u8 = undefined;
     var fixed_buffer = FixedBufferAllocator.init(&buffer);
     const allocator = fixed_buffer.allocator();
 
