@@ -1,6 +1,7 @@
 const vk = @import("vk.zig");
 
 pub const Error = error{
+    VkUnhandled,
     VkOutOfHostMemory,
     VkOutOfDeviceMemory,
     VkInitializationFailed,
@@ -80,7 +81,7 @@ pub fn translateError(result: vk.VkResult) Error {
         .VK_ERROR_INVALID_VIDEO_STD_PARAMETERS_KHR => error.VkInvalidVideoStdParametersKhr,
         .VK_ERROR_COMPRESSION_EXHAUSTED_EXT => error.VkCompressionExhaustedExt,
         .VK_ERROR_NOT_ENOUGH_SPACE_KHR => error.VkNotEnoughSpaceKhr,
-        else => @panic("Unhandled error"),
+        else => error.VkUnhandled,
     };
 }
 
