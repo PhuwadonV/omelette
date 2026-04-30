@@ -3,12 +3,10 @@ const vkh = root.vkh;
 const wnd = root.wnd;
 const root = @import("root");
 const window = root.window;
-const unicode = std.unicode;
 
 pub const spec = @import("spec.zig");
 
 const MainWindow = window.MainWindow;
-const FixedBufferAllocator = std.heap.FixedBufferAllocator;
 
 pub fn App(comptime main_window: *MainWindow) type {
     return struct {
@@ -113,11 +111,11 @@ pub fn App(comptime main_window: *MainWindow) type {
 
             renderBackground(main_window.hWnd, hDc, self.hBr);
 
+            if (!@import("config").dev_mode) return;
+
             const vk_version = vkh.getApiVersion() catch return;
 
-            var buffer: [256]u8 = undefined;
-            var fixed_buffer = FixedBufferAllocator.init(&buffer);
-            const allocator = fixed_buffer.allocator();
+            var buffer: [128]u8 = undefined;
 
             const format =
                 \\Variant = {d}, 
@@ -126,20 +124,20 @@ pub fn App(comptime main_window: *MainWindow) type {
                 \\Patch = {d}
             ;
 
-            const text_u8 = std.fmt.allocPrint(
-                allocator,
-                format,
-                .{
-                    vk_version.variant,
-                    vk_version.major,
-                    vk_version.minor,
-                    vk_version.patch,
-                },
-            ) catch return;
-
-            const text_u16 = unicode.utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
-
-            renderText(hDc, text_u16);
+            renderText(
+                hDc,
+                std.fmt.bufPrintSentinel(
+                    &buffer,
+                    format,
+                    .{
+                        vk_version.variant,
+                        vk_version.major,
+                        vk_version.minor,
+                        vk_version.patch,
+                    },
+                    0,
+                ) catch return,
+            );
         }
 
         fn cleanup(self: *@This()) void {
@@ -159,17 +157,19 @@ fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
     _ = wnd.FillRect(hDc, &rect, hBr);
 }
 
-fn renderText(hDc: ?wnd.HDC, text: [:0]const u16) void {
-    _ = wnd.TextOutW(hDc, 0, 0, text, @intCast(text.len));
+fn renderText(hDc: ?wnd.HDC, text: [:0]const u8) void {
+    _ = wnd.TextOutA(hDc, 0, 0, text, @intCast(text.len));
 }
 
 fn showUMsg(uMsg: wnd.UINT) void {
-    var buffer: [256]u8 = undefined;
-    var fixed_buffer = FixedBufferAllocator.init(&buffer);
-    const allocator = fixed_buffer.allocator();
+    if (!@import("config").dev_mode) return;
 
-    const text_u8 = std.fmt.allocPrint(allocator, "{x}", .{uMsg}) catch return;
-    const text_u16 = unicode.utf8ToUtf16LeAllocZ(allocator, text_u8) catch return;
+    var buffer: [16]u8 = undefined;
 
-    _ = wnd.MessageBoxW(null, text_u16, unicode.utf8ToUtf16LeStringLiteral("uMsg"), 0);
+    _ = wnd.MessageBoxA(
+        null,
+        std.fmt.bufPrintSentinel(&buffer, "{x}", .{uMsg}, 0) catch return,
+        "uMsg",
+        0,
+    );
 }

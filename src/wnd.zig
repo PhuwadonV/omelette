@@ -170,6 +170,6 @@ pub extern "user32" fn GetSystemMetrics(nIndex: c_int) c_int;
 pub extern "user32" fn RegisterClassExW(lpWndClass: ?*const WNDCLASSEXW) callconv(.winapi) ATOM;
 pub extern "user32" fn TranslateMessage(lpMsg: ?*const MSG) callconv(.winapi) BOOL;
 
-pub extern "gdi32" fn TextOutW(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCWSTR, c: c_int) callconv(.winapi) BOOL;
+pub extern "gdi32" fn TextOutA(hDc: ?HDC, x: c_int, y: c_int, lpString: ?LPCSTR, c: c_int) callconv(.winapi) BOOL;
 pub extern "gdi32" fn DeleteObject(?*anyopaque) callconv(.winapi) BOOL;
 pub extern "gdi32" fn CreateSolidBrush(color: DWORD) callconv(.winapi) HBRUSH;
