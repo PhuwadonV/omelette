@@ -92,6 +92,7 @@ pub fn App(comptime main_window: *MainWindow) type {
                         wnd.WM_DPICHANGED => {},
                         wnd.WM_APPCOMMAND => {},
                         wnd.WM_DWMCOLORIZATIONCOLORCHANGED => {},
+                        0x400...std.math.maxInt(wnd.UINT) => {},
                         else => showUMsg(uMsg),
                     }
 
