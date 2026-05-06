@@ -6,7 +6,7 @@ pub const vk = @import("vk.zig");
 pub const app = @import("app/app.zig");
 pub const dbg = @import("dbg/dbg.zig");
 pub const vkh = @import("vkh.zig");
-pub const wnd = @import("wnd.zig");
+pub const wnd = @import("wnd/wnd.zig");
 pub const window = @import("window/window.zig");
 
 const App = app.App(&main_window);
@@ -41,7 +41,7 @@ fn run() !wnd.UINT {
 
     running: while (true) {
         while (wnd.PeekMessageW(&msg, null, 0, 0, wnd.PM_REMOVE).toBool()) {
-            if (msg.message == wnd.WM_QUIT) {
+            if (msg.message == @intFromEnum(wnd.WM.QUIT)) {
                 @branchHint(.unlikely);
                 exit_code = @intCast(msg.wParam);
                 break :running;

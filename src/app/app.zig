@@ -2,6 +2,7 @@ const std = @import("std");
 const vkh = root.vkh;
 const wnd = root.wnd;
 const root = @import("root");
+const config = @import("config");
 const window = root.window;
 
 pub const spec = @import("spec.zig");
@@ -21,80 +22,24 @@ pub fn App(comptime main_window: *MainWindow) type {
         pub fn getMainWndproc(comptime self: *@This()) wnd.WNDPROC {
             return struct {
                 fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPARAM) callconv(.winapi) wnd.LRESULT {
-                    if (uMsg == wnd.WM_DESTROY and hWnd == main_window.hWnd) {
-                        @branchHint(.unlikely);
-                        main_window.notifyInvalid();
-                        self.cleanup();
-                        wnd.PostQuitMessage(0);
-                        return 0;
-                    }
+                    const opt_msg: ?wnd.WM = if (uMsg < 0x400) @enumFromInt(uMsg) else null;
 
-                    switch (uMsg) {
-                        wnd.WM_CREATE => {},
-                        wnd.WM_MOVE => {},
-                        wnd.WM_SIZE => {},
-                        wnd.WM_ACTIVATE => {},
-                        wnd.WM_SETFOCUS => {},
-                        wnd.WM_KILLFOCUS => {},
-                        wnd.WM_PAINT => if (hWnd == main_window.hWnd) {
+                    if (opt_msg) |msg| switch (msg) {
+                        .DESTROY => if (hWnd == main_window.hWnd) {
+                            @branchHint(.unlikely);
+                            main_window.notifyInvalid();
+                            self.cleanup();
+                            wnd.PostQuitMessage(0);
+                            return 0;
+                        },
+                        .PAINT => if (hWnd == main_window.hWnd) {
                             self.render();
                             return 0;
                         },
-                        wnd.WM_CLOSE => {},
-                        wnd.WM_QUERYENDSESSION => {},
-                        wnd.WM_ERASEBKGND => {},
-                        wnd.WM_ENDSESSION => {},
-                        wnd.WM_SHOWWINDOW => {},
-                        wnd.WM_ACTIVATEAPP => {},
-                        wnd.WM_TIMECHANGE => {},
-                        wnd.WM_SETCURSOR => {},
-                        wnd.WM_MOUSEACTIVATE => {},
-                        wnd.WM_WINDOWPOSCHANGING => {},
-                        wnd.WM_WINDOWPOSCHANGED => {},
-                        wnd.WM_NOTIFY => {},
-                        wnd.WM_INPUTLANGCHANGE => {},
-                        wnd.WM_HELP => {},
-                        wnd.WM_CONTEXTMENU => {},
-                        wnd.WM_DISPLAYCHANGE => {},
-                        wnd.WM_GETICON => {},
-                        wnd.WM_NCCREATE => {},
-                        wnd.WM_NCDESTROY => {},
-                        wnd.WM_NCCALCSIZE => {},
-                        wnd.WM_NCHITTEST => {},
-                        wnd.WM_NCPAINT => {},
-                        wnd.WM_NCACTIVATE => {},
-                        wnd.WM_UAHDESTROYWINDOW => {},
-                        wnd.WM_INPUT => {},
-                        wnd.WM_KEYDOWN => {},
-                        wnd.WM_KEYUP => {},
-                        wnd.WM_CHAR => {},
-                        wnd.WM_SYSKEYDOWN => {},
-                        wnd.WM_SYSKEYUP => {},
-                        wnd.WM_SYSCHAR => {},
-                        wnd.WM_SYSCOMMAND => {},
-                        wnd.WM_MOUSEMOVE => {},
-                        wnd.WM_LBUTTONDOWN => {},
-                        wnd.WM_LBUTTONUP => {},
-                        wnd.WM_RBUTTONDOWN => {},
-                        wnd.WM_RBUTTONUP => {},
-                        wnd.WM_MBUTTONDOWN => {},
-                        wnd.WM_MBUTTONUP => {},
-                        wnd.WM_MOUSEWHEEL => {},
-                        wnd.WM_XBUTTONDOWN => {},
-                        wnd.WM_XBUTTONUP => {},
-                        wnd.WM_CAPTURECHANGED => {},
-                        wnd.WM_MENUDRAG => {},
-                        wnd.WM_MENUGETOBJECT => {},
-                        wnd.WM_IME_SETCONTEXT => {},
-                        wnd.WM_IME_NOTIFY => {},
-                        wnd.WM_IME_REQUEST => {},
-                        wnd.WM_MOUSELEAVE => {},
-                        wnd.WM_DPICHANGED => {},
-                        wnd.WM_APPCOMMAND => {},
-                        wnd.WM_DWMCOLORIZATIONCOLORCHANGED => {},
-                        0x400...std.math.maxInt(wnd.UINT) => {},
-                        else => showUMsg(uMsg),
-                    }
+                        else => if (config.dev_mode) {
+                            _ = wnd.MessageBoxA(null, @tagName(msg), "WM", 0);
+                        },
+                    };
 
                     return wnd.DefWindowProcW(hWnd, uMsg, wParam, lParam);
                 }
@@ -160,17 +105,4 @@ fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
 
 fn renderText(hDc: ?wnd.HDC, text: [:0]const u8) void {
     _ = wnd.TextOutA(hDc, 0, 0, text, @intCast(text.len));
-}
-
-fn showUMsg(uMsg: wnd.UINT) void {
-    if (!@import("config").dev_mode) return;
-
-    var buffer: [16]u8 = undefined;
-
-    _ = wnd.MessageBoxA(
-        null,
-        std.fmt.bufPrintSentinel(&buffer, "{x}", .{uMsg}, 0) catch return,
-        "uMsg",
-        0,
-    );
 }
