@@ -1,4 +1,3 @@
-const app = root.app;
 const std = @import("std");
 const wnd = root.wnd;
 const root = @import("root");
@@ -6,11 +5,13 @@ const debug = std.debug;
 const config = @import("config");
 const unicode = std.unicode;
 
+const App = root.App;
+
 pub fn showMsg(msg: [:0]const u8) void {
     _ = wnd.MessageBoxA(
         null,
         msg,
-        app.spec.getAppTitle(),
+        App.spec.getAppTitle(),
         wnd.MB_OK,
     );
 }
@@ -19,7 +20,7 @@ pub fn showMsgW(msg: [:0]const u16) void {
     _ = wnd.MessageBoxW(
         null,
         msg,
-        unicode.utf8ToUtf16LeStringLiteral(app.spec.getAppTitle()),
+        unicode.utf8ToUtf16LeStringLiteral(App.spec.getAppTitle()),
         wnd.MB_OK,
     );
 }
@@ -28,7 +29,7 @@ pub fn showErrorMsg(msg: [:0]const u8) void {
     _ = wnd.MessageBoxA(
         null,
         msg,
-        app.spec.getAppTitle(),
+        App.spec.getAppTitle(),
         wnd.MB_ICONERROR,
     );
 
