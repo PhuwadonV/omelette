@@ -2,27 +2,16 @@ const std = @import("std");
 const vkh = root.vkh;
 const wnd = root.wnd;
 const root = @import("root");
-const config = @import("config");
 
-const App = root.App;
-const Renderer = @This();
+pub fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
+    var rect: wnd.RECT = undefined;
 
-buffer: [128]u8,
-
-pub fn create() Renderer {
-    return .{
-        .buffer = undefined,
-    };
+    _ = wnd.GetClientRect(hWnd, &rect);
+    _ = wnd.FillRect(hDc, &rect, hBr);
 }
 
-pub fn render(self: *Renderer, app: *App, hWnd: ?wnd.HWND) void {
-    var paint: wnd.PAINTSTRUCT = undefined;
-    const hDc = wnd.BeginPaint(hWnd, &paint);
-    defer _ = wnd.EndPaint(hWnd, &paint);
-
-    renderBackground(hWnd, hDc, app.bg_color);
-
-    if (!config.dev_mode) return;
+pub fn renderVkApiVersion(hDc: ?wnd.HDC) void {
+    var buffer: [128]u8 = undefined;
 
     const vk_version = vkh.getApiVersion() catch return;
 
@@ -36,7 +25,7 @@ pub fn render(self: *Renderer, app: *App, hWnd: ?wnd.HWND) void {
     renderText(
         hDc,
         std.fmt.bufPrintSentinel(
-            &self.buffer,
+            &buffer,
             format,
             .{
                 vk_version.variant,
@@ -47,13 +36,6 @@ pub fn render(self: *Renderer, app: *App, hWnd: ?wnd.HWND) void {
             0,
         ) catch return,
     );
-}
-
-fn renderBackground(hWnd: ?wnd.HWND, hDc: ?wnd.HDC, hBr: ?wnd.HBRUSH) void {
-    var rect: wnd.RECT = undefined;
-
-    _ = wnd.GetClientRect(hWnd, &rect);
-    _ = wnd.FillRect(hDc, &rect, hBr);
 }
 
 fn renderText(hDc: ?wnd.HDC, text: [:0]const u8) void {

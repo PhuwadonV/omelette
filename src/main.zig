@@ -7,17 +7,18 @@ pub const dbg = @import("dbg/dbg.zig");
 pub const vkh = @import("vkh.zig");
 pub const wnd = @import("wnd/wnd.zig");
 pub const window = @import("window/window.zig");
+pub const renderer = @import("renderer/renderer.zig");
 
 const MainWindow = window.MainWindow;
+const MainRenderer = renderer.MainRenderer;
 
 pub const App = @import("app/App.zig");
-pub const Renderer = @import("renderer/Renderer.zig");
 
 pub const panic = debug.FullPanic(dbg.panic);
 
-var main_app: App = undefined;
+var app: App = undefined;
 var main_window: MainWindow = undefined;
-var main_renderer: Renderer = undefined;
+var main_renderer: MainRenderer = undefined;
 
 pub fn main() void {
     if (config.dev_mode) _ = wnd.AttachConsole(0xFFFFFFFF);
@@ -35,7 +36,8 @@ pub fn main() void {
 }
 
 fn run() !wnd.UINT {
-    try init();
+    try begin();
+    defer end();
 
     var exit_code: wnd.UINT = 0;
     var msg: wnd.MSG = undefined;
@@ -56,27 +58,36 @@ fn run() !wnd.UINT {
     return exit_code;
 }
 
-fn init() !void {
+fn begin() !void {
     main_window = try MainWindow.create(wndproc);
-    main_app = App.create(wnd.CreateSolidBrush(0x008080FF));
-    main_renderer = Renderer.create();
+    main_renderer = try MainRenderer.create(&main_window);
+    app = try App.create(&main_window, &main_renderer);
 
-    main_window.notifyReady();
+    main_renderer.renderFirstFrame();
+    main_window.notifyFirstFrameRendered();
+}
+
+fn end() void {
+    app.destroy();
 }
 
 fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPARAM) callconv(.winapi) wnd.LRESULT {
     const opt_msg: ?wnd.WM = if (uMsg < 0x400) @enumFromInt(uMsg) else null;
 
     if (opt_msg) |msg| switch (msg) {
+        .CLOSE => if (hWnd == main_window.hWnd) {
+            @branchHint(.unlikely);
+            main_renderer.destroy();
+            main_window.notifyClose();
+        },
         .DESTROY => if (hWnd == main_window.hWnd) {
             @branchHint(.unlikely);
-            main_window.notifyInvalid();
-            main_app.cleanup();
+            main_window.destroy();
             wnd.PostQuitMessage(0);
             return 0;
         },
         .PAINT => if (hWnd == main_window.hWnd) {
-            main_renderer.render(&main_app, hWnd);
+            main_renderer.render(&app, hWnd);
             return 0;
         },
         .CREATE => {},
@@ -85,7 +96,6 @@ fn wndproc(hWnd: ?wnd.HWND, uMsg: wnd.UINT, wParam: wnd.WPARAM, lParam: wnd.LPAR
         .ACTIVATE => {},
         .SETFOCUS => {},
         .KILLFOCUS => {},
-        .CLOSE => {},
         .ERASEBKGND => {},
         .SHOWWINDOW => {},
         .ACTIVATEAPP => {},
