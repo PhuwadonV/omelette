@@ -95,6 +95,13 @@ pub inline fn wrapResult(result: vk.VkResult) Error!vk.VkResult {
     }
 }
 
+pub inline fn makeApiVersion(variant: u3, major: u7, minor: u10, patch: u12) u32 {
+    return @as(u32, @intCast(variant)) << 29 |
+        @as(u32, @intCast(major)) << 22 |
+        @as(u32, @intCast(minor)) << 12 |
+        @as(u32, @intCast(patch));
+}
+
 pub fn translateApiVersion(api_version: u32) Version {
     return .{
         .variant = api_version >> 29,
