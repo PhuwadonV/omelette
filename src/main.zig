@@ -2,9 +2,9 @@ const std = @import("std");
 const debug = std.debug;
 const config = @import("config");
 
-pub const vk = @import("vk.zig");
+pub const vk = @import("vk/vk.zig");
 pub const dbg = @import("dbg/dbg.zig");
-pub const vkh = @import("vkh.zig");
+pub const vkh = @import("vkh/vkh.zig");
 pub const wnd = @import("wnd/wnd.zig");
 pub const window = @import("window/window.zig");
 pub const renderer = @import("renderer/renderer.zig");

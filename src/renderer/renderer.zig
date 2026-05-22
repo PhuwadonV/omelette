@@ -1,20 +1,26 @@
+const vk = root.vk;
+const vkh = root.vkh;
 const wnd = root.wnd;
 const impl = @import("impl.zig");
 const root = @import("root");
 const config = @import("config");
 const window = root.window;
 
+pub const spec = @import("spec.zig");
+
 const App = root.App;
 const MainWindow = window.MainWindow;
 
 pub const MainRenderer = struct {
     valid: bool = false,
+    vk_instance: vk.Instance = null,
 
     pub fn create(main_window: *const MainWindow) !MainRenderer {
         if (!main_window.valid) return error.InvalidMainWindow;
 
         return .{
             .valid = true,
+            .vk_instance = try impl.createVkInstance(),
         };
     }
 
