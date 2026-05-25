@@ -25,9 +25,9 @@ pub const Result = enum(c_int) {
     // Provided by VK_VERSION_1_1
     ERROR_INVALID_EXTERNAL_HANDLE = -1000072003,
     // Provided by VK_VERSION_1_2
-    ERROR_FRAGMENTATION = -1000161000,
-    // Provided by VK_VERSION_1_2
     ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS = -1000257000,
+    // Provided by VK_VERSION_1_2
+    ERROR_FRAGMENTATION = -1000161000,
     // Provided by VK_VERSION_1_3
     PIPELINE_COMPILE_REQUIRED = 1000297000,
     // Provided by VK_VERSION_1_4
@@ -42,6 +42,8 @@ pub const Result = enum(c_int) {
     ERROR_OUT_OF_DATE_KHR = -1000001004,
     // Provided by VK_KHR_display_swapchain
     ERROR_INCOMPATIBLE_DISPLAY_KHR = -1000003001,
+    // Provided by VK_NV_glsl_shader
+    ERROR_INVALID_SHADER_NV = -1000012000,
     // Provided by VK_KHR_video_queue
     ERROR_IMAGE_USAGE_NOT_SUPPORTED_KHR = -1000023000,
     // Provided by VK_KHR_video_queue
@@ -56,6 +58,8 @@ pub const Result = enum(c_int) {
     ERROR_VIDEO_STD_VERSION_NOT_SUPPORTED_KHR = -1000023005,
     // Provided by VK_EXT_image_drm_format_modifier
     ERROR_INVALID_DRM_FORMAT_MODIFIER_PLANE_LAYOUT_EXT = -1000158000,
+    // Provided by VK_EXT_present_timing
+    ERROR_PRESENT_TIMING_QUEUE_FULL_EXT = -1000208000,
     // Provided by VK_EXT_full_screen_exclusive
     ERROR_FULL_SCREEN_EXCLUSIVE_MODE_LOST_EXT = -1000255000,
     // Provided by VK_KHR_deferred_host_operations

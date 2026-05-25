@@ -9,6 +9,7 @@ const constant = @import("constant/constant.zig");
 const function = @import("function/function.zig");
 const structure = @import("structure/structure.zig");
 
+// VK_VERSION_1_0
 pub const TRUE = @as(u32, 1);
 pub const FALSE = @as(u32, 0);
 pub const UUID_SIZE = @as(u32, 16);
@@ -25,6 +26,19 @@ pub const REMAINING_ARRAY_LAYERS = ~@as(u32, 0);
 pub const MAX_EXTENSION_NAME_SIZE = @as(u32, 256);
 pub const MAX_PHYSICAL_DEVICE_NAME_SIZE = @as(u32, 256);
 
+// VK_VERSION_1_1
+const LUID_SIZE = @as(u32, 8);
+const MAX_DEVICE_GROUP_SIZE = @as(u32, 32);
+const QUEUE_FAMILY_EXTERNAL = ~@as(u32, 1);
+
+// VK_VERSION_1_2
+const MAX_DRIVER_NAME_SIZE = @as(u32, 256);
+const MAX_DRIVER_INFO_SIZE = @as(u32, 256);
+
+// VK_VERSION_1_4
+const MAX_GLOBAL_PRIORITY_SIZE = @as(u32, 16);
+
+// VK_VERSION_1_0
 pub const PFN_FreeFunction = *const fn (pUserData: ?*anyopaque, pMemory: ?*anyopaque) callconv(.c) void;
 pub const PFN_VoidFunction = *const fn () callconv(.c) void;
 pub const PFN_AllocationFunction = *const fn (pUserData: ?*anyopaque, size: usize, alignment: usize, allocationScope: SystemAllocationScope) callconv(.c) ?*anyopaque;
@@ -32,20 +46,25 @@ pub const PFN_ReallocationFunction = *const fn (pUserData: ?*anyopaque, pOrigina
 pub const PFN_InternalFreeNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.c) void;
 pub const PFN_InternalAllocationNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.c) void;
 
+// VK_VERSION_1_0
 pub const Flags = u32;
-pub const Flags64 = u64;
 pub const Bool32 = u32;
 pub const DeviceSize = u64;
 pub const SampleMask = u32;
 pub const DeviceAddress = u64;
 pub const InstanceCreateFlags = Flags;
 
+// VK_VERSION_1_3
+pub const Flags64 = u64;
+
+// VK_VERSION_1_1 & HANDLE
 pub const Queue = ?*opaque {};
 pub const Device = ?*opaque {};
 pub const Instance = ?*opaque {};
 pub const CommandBuffer = ?*opaque {};
 pub const PhysicalDevice = ?*opaque {};
 
+// VK_VERSION_1_1 & NON_DISPATCHABLE_HANDLE
 pub const Event = ?*opaque {};
 pub const Fence = ?*opaque {};
 pub const Image = ?*opaque {};
@@ -65,24 +84,32 @@ pub const DescriptorSet = ?*opaque {};
 pub const PipelineCache = ?*opaque {};
 pub const DescriptorPool = ?*opaque {};
 pub const PipelineLayout = ?*opaque {};
-pub const PrivateDataSlot = ?*opaque {};
 pub const DescriptorSetLayout = ?*opaque {};
+
+// VK_VERSION_1_1
 pub const SamplerYcbcrConversion = ?*opaque {};
 pub const DescriptorUpdateTemplate = ?*opaque {};
 
+// VK_VERSION_1_3
+pub const PrivateDataSlot = ?*opaque {};
+
+// VK_VERSION_1_0
 pub const Result = constant.Result;
 pub const StructureType = constant.StructureType;
 pub const SystemAllocationScope = constant.SystemAllocationScope;
 pub const InternalAllocationType = constant.InternalAllocationType;
 
+// VK_VERSION_1_0
 pub const ApplicationInfo = structure.ApplicationInfo;
 pub const LayerProperties = structure.LayerProperties;
 pub const InstanceCreateInfo = structure.InstanceCreateInfo;
 pub const AllocationCallbacks = structure.AllocationCallbacks;
 pub const ExtensionProperties = structure.ExtensionProperties;
 
+// VK_VERSION_1_0
 pub const enumerateInstanceVersion = function.enumerateInstanceVersion;
 pub const enumerateInstanceLayerProperties = function.enumerateInstanceLayerProperties;
 pub const enumerateInstanceExtensionProperties = function.enumerateInstanceExtensionProperties;
 
+// VK_VERSION_1_0 & Instance
 pub const createInstance = function.createInstance;
