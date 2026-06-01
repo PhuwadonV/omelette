@@ -39,14 +39,6 @@ const MAX_DRIVER_INFO_SIZE = @as(u32, 256);
 const MAX_GLOBAL_PRIORITY_SIZE = @as(u32, 16);
 
 // VK_VERSION_1_0
-pub const PFN_FreeFunction = *const fn (pUserData: ?*anyopaque, pMemory: ?*anyopaque) callconv(.c) void;
-pub const PFN_VoidFunction = *const fn () callconv(.c) void;
-pub const PFN_AllocationFunction = *const fn (pUserData: ?*anyopaque, size: usize, alignment: usize, allocationScope: SystemAllocationScope) callconv(.c) ?*anyopaque;
-pub const PFN_ReallocationFunction = *const fn (pUserData: ?*anyopaque, pOriginal: ?*anyopaque, size: usize, alignment: usize, allocationScope: SystemAllocationScope) callconv(.c) ?*anyopaque;
-pub const PFN_InternalFreeNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.c) void;
-pub const PFN_InternalAllocationNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.c) void;
-
-// VK_VERSION_1_0
 pub const Flags = u32;
 pub const Bool32 = u32;
 pub const DeviceSize = u64;
@@ -106,6 +98,17 @@ pub const InstanceCreateInfo = structure.InstanceCreateInfo;
 pub const AllocationCallbacks = structure.AllocationCallbacks;
 pub const ExtensionProperties = structure.ExtensionProperties;
 
+// VK_VERSION_1_0 & PFN
+pub const PFN_FreeFunction = *const fn (pUserData: ?*anyopaque, pMemory: ?*anyopaque) callconv(.winapi) void;
+pub const PFN_VoidFunction = *const fn () callconv(.winapi) void;
+pub const PFN_AllocationFunction = *const fn (pUserData: ?*anyopaque, size: usize, alignment: usize, allocationScope: SystemAllocationScope) callconv(.winapi) ?*anyopaque;
+pub const PFN_ReallocationFunction = *const fn (pUserData: ?*anyopaque, pOriginal: ?*anyopaque, size: usize, alignment: usize, allocationScope: SystemAllocationScope) callconv(.winapi) ?*anyopaque;
+pub const PFN_InternalFreeNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.winapi) void;
+pub const PFN_InternalAllocationNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.winapi) void;
+
+// VK_VERSION_1_0 & PFN Instance
+pub const PFN_EnumeratePhysicalDevices = *const fn (instance: Instance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *PhysicalDevice) callconv(.winapi) void;
+
 // VK_VERSION_1_0
 pub const enumerateInstanceVersion = function.enumerateInstanceVersion;
 pub const enumerateInstanceLayerProperties = function.enumerateInstanceLayerProperties;
@@ -113,3 +116,4 @@ pub const enumerateInstanceExtensionProperties = function.enumerateInstanceExten
 
 // VK_VERSION_1_0 & Instance
 pub const createInstance = function.createInstance;
+pub const getInstanceProcAddr = function.getInstanceProcAddr;

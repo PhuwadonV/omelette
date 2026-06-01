@@ -46,6 +46,10 @@ pub const Version = extern struct {
     patch: u32,
 };
 
+pub const InstanceProcs = struct {
+    vkEnumeratePhysicalDevices: vk.PFN_EnumeratePhysicalDevices,
+};
+
 pub fn translateError(result: vk.Result) Error {
     return switch (result) {
         .ERROR_OUT_OF_HOST_MEMORY => error.VkOutOfHostMemory,
@@ -118,4 +122,14 @@ pub fn getApiVersion() !Version {
     _ = try wrapResult(vk.enumerateInstanceVersion(&version));
 
     return translateApiVersion(version);
+}
+
+pub fn getInstanceProcs(vk_instance: vk.Instance) ?InstanceProcs {
+    var instance_procs: InstanceProcs = undefined;
+
+    inline for (@typeInfo(InstanceProcs).@"struct".fields) |field| {
+        @field(instance_procs, field.name) = @ptrCast(vk.getInstanceProcAddr(vk_instance, field.name) orelse return null);
+    }
+
+    return instance_procs;
 }
