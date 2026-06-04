@@ -48,6 +48,7 @@ pub const Version = extern struct {
 
 pub const InstanceProcs = struct {
     vkEnumeratePhysicalDevices: vk.PFN_EnumeratePhysicalDevices,
+    vkGetPhysicalDeviceProperties: vk.PFN_GetPhysicalDeviceProperties,
 };
 
 pub fn translateError(result: vk.Result) Error {
@@ -124,11 +125,13 @@ pub fn getApiVersion() !Version {
     return translateApiVersion(version);
 }
 
-pub fn getInstanceProcs(vk_instance: vk.Instance) ?InstanceProcs {
+pub fn getInstanceProcs(vk_instance: vk.Instance) !InstanceProcs {
     var instance_procs: InstanceProcs = undefined;
 
     inline for (@typeInfo(InstanceProcs).@"struct".fields) |field| {
-        @field(instance_procs, field.name) = @ptrCast(vk.getInstanceProcAddr(vk_instance, field.name) orelse return null);
+        @field(instance_procs, field.name) =
+            @ptrCast(vk.getInstanceProcAddr(vk_instance, field.name) orelse
+                return @field(anyerror, "RequiredProcV" ++ field.name[1..field.name.len]));
     }
 
     return instance_procs;

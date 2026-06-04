@@ -88,8 +88,10 @@ pub const PrivateDataSlot = ?*opaque {};
 // VK_VERSION_1_0
 pub const Result = constant.Result;
 pub const StructureType = constant.StructureType;
+pub const PhysicalDeviceType = constant.PhysicalDeviceType;
 pub const SystemAllocationScope = constant.SystemAllocationScope;
 pub const InternalAllocationType = constant.InternalAllocationType;
+pub const SampleCountFlags = Flags;
 
 // VK_VERSION_1_0
 pub const ApplicationInfo = structure.ApplicationInfo;
@@ -97,6 +99,9 @@ pub const LayerProperties = structure.LayerProperties;
 pub const InstanceCreateInfo = structure.InstanceCreateInfo;
 pub const AllocationCallbacks = structure.AllocationCallbacks;
 pub const ExtensionProperties = structure.ExtensionProperties;
+pub const PhysicalDeviceLimits = structure.PhysicalDeviceLimits;
+pub const PhysicalDeviceProperties = structure.PhysicalDeviceProperties;
+pub const PhysicalDeviceSparseProperties = structure.PhysicalDeviceSparseProperties;
 
 // VK_VERSION_1_0 & PFN
 pub const PFN_FreeFunction = *const fn (pUserData: ?*anyopaque, pMemory: ?*anyopaque) callconv(.winapi) void;
@@ -107,7 +112,8 @@ pub const PFN_InternalFreeNotification = *const fn (pUserData: ?*anyopaque, size
 pub const PFN_InternalAllocationNotification = *const fn (pUserData: ?*anyopaque, size: usize, allocationType: InternalAllocationType, allocationScope: SystemAllocationScope) callconv(.winapi) void;
 
 // VK_VERSION_1_0 & PFN Instance
-pub const PFN_EnumeratePhysicalDevices = *const fn (instance: Instance, pPhysicalDeviceCount: *u32, pPhysicalDevices: *PhysicalDevice) callconv(.winapi) void;
+pub const PFN_EnumeratePhysicalDevices = *const fn (instance: Instance, pPhysicalDeviceCount: *u32, pPhysicalDevices: ?*PhysicalDevice) callconv(.winapi) Result;
+pub const PFN_GetPhysicalDeviceProperties = *const fn (physicalDevice: PhysicalDevice, pProperties: *PhysicalDeviceProperties) callconv(.winapi) void;
 
 // VK_VERSION_1_0
 pub const enumerateInstanceVersion = function.enumerateInstanceVersion;
