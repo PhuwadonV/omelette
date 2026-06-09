@@ -59,9 +59,9 @@ fn run() !wnd.UINT {
 }
 
 fn begin() !void {
-    main_window = try MainWindow.create(wndproc);
-    main_renderer = try MainRenderer.create(&main_window);
-    app = try App.create(&main_window, &main_renderer);
+    main_window = try .create(wndproc);
+    main_renderer = try .create(&main_window);
+    app = try .create(&main_window, &main_renderer);
 
     main_renderer.renderFirstFrame();
     main_window.notifyFirstFrameRendered();
