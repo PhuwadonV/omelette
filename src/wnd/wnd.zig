@@ -15,6 +15,7 @@ pub const HBRUSH = windows.HBRUSH;
 pub const LPARAM = windows.LPARAM;
 pub const LPCSTR = windows.LPCSTR;
 pub const LPVOID = windows.LPVOID;
+pub const SIZE_T = windows.SIZE_T;
 pub const WPARAM = usize;
 pub const HCURSOR = windows.HCURSOR;
 pub const HMODULE = windows.HMODULE;
@@ -85,12 +86,22 @@ pub const SW_SHOWDEFAULT = 10;
 pub const WS_EX_APPWINDOW = 0x00040000;
 pub const WS_POPUP = 0x80000000;
 
+pub const MEM_COMMIT = 0x00001000;
+pub const MEM_RESERVE = 0x00002000;
+pub const MEM_DECOMMIT = 0x00004000;
+pub const MEM_RELEASE = 0x00008000;
+pub const MEM_RESET = 0x00080000;
+pub const MEM_LARGE_PAGES = 0x20000000;
+
 pub const WM = @import("wm.zig").WM;
 
 pub extern "kernel32" fn ExitProcess(exit_code: UINT) callconv(.winapi) noreturn;
+pub extern "kernel32" fn VirtualFree(lpAddress: LPVOID, dwSize: SIZE_T, dwFreeType: DWORD) BOOL;
+pub extern "kernel32" fn VirtualAlloc(lpAddress: LPVOID, dwSize: SIZE_T, flAllocationType: DWORD, flProtect: DWORD) LPVOID;
 pub extern "kernel32" fn AttachConsole(dwProcessId: DWORD) callconv(.winapi) BOOL;
 pub extern "kernel32" fn GetModuleHandleW(lpModuleName: ?LPCWSTR) callconv(.winapi) ?HMODULE;
 pub extern "kernel32" fn IsDebuggerPresent() callconv(.winapi) BOOL;
+pub extern "kernel32" fn GetLargePageMinimum() SIZE_T;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
 pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) callconv(.winapi) c_int;
