@@ -91,7 +91,6 @@ pub const MEM_RESERVE = 0x00002000;
 pub const MEM_DECOMMIT = 0x00004000;
 pub const MEM_RELEASE = 0x00008000;
 pub const MEM_RESET = 0x00080000;
-pub const MEM_LARGE_PAGES = 0x20000000;
 
 pub const PAGE_READWRITE = 0x04;
 
@@ -103,7 +102,6 @@ pub extern "kernel32" fn VirtualAlloc(lpAddress: ?LPVOID, dwSize: SIZE_T, flAllo
 pub extern "kernel32" fn AttachConsole(dwProcessId: DWORD) callconv(.winapi) BOOL;
 pub extern "kernel32" fn GetModuleHandleW(lpModuleName: ?LPCWSTR) callconv(.winapi) ?HMODULE;
 pub extern "kernel32" fn IsDebuggerPresent() callconv(.winapi) BOOL;
-pub extern "kernel32" fn GetLargePageMinimum() callconv(.winapi) SIZE_T;
 
 pub extern "user32" fn EndPaint(hWnd: ?HWND, lpPaint: ?*const PAINTSTRUCT) callconv(.winapi) BOOL;
 pub extern "user32" fn FillRect(hDC: ?HDC, lprc: ?*const RECT, hBr: ?HBRUSH) callconv(.winapi) c_int;
