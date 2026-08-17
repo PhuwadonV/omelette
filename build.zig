@@ -6,12 +6,14 @@ pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const dev_mode = b.option(bool, "dev", "Developer mode") orelse (optimize == .Debug);
+    const allow_todo = b.option(bool, "todo", "Allow todo") orelse (optimize == .Debug);
     const vk_sdk_path = if (b.graph.environ_map.get("VK_SDK_PATH")) |path| path else return error.VkSdkPathRequired;
     const vk_lib_path = try allocPrint(b.allocator, "{s}/lib", .{vk_sdk_path});
 
     const options = b.addOptions();
 
     options.addOption(bool, "dev_mode", dev_mode);
+    options.addOption(bool, "allow_todo", allow_todo);
 
     const exe = b.addExecutable(.{
         .name = "Omelette",
